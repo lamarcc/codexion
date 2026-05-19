@@ -6,33 +6,38 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/19 01:19:39 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/19 05:21:49 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CODEXION_H
 # define CODEXION_H
 
+# include <stdlib.h>
 # include <stdio.h>
+# include <string.h>
 # include <unistd.h>
 # include <pthread.h>
 
 # define TRUE 1
 # define FALSE 0
+# define ARG_EXEMPLE "Follow: ./codexion <number_of_coders> <time_to_burnout> \
+<time_to_compile> <time_to_debug> <time_to_refactor> \
+<number_of_compiles_required> <dongle_cooldown> <scheduler>"
 
 typedef struct s_simulation
 {
 	int					nb_coders;
-	int					compile_required;
+	int					nb_compile;
 	int					end_simulation;
-	int					fifo;
-	int					edf;
+	int					scheduler;
 	long				time_burnout;
 	long				time_compile;
 	long				time_debug;
 	long				time_refactor;
 	long				dongle_cooldown;
 	long				start_time;
+	char				*errors;
 	pthread_mutex_t		mutex_log;
 	pthread_mutex_t		mutex_sim;
 	struct s_coder		*coders;
@@ -65,5 +70,9 @@ typedef struct s_heap
 	t_coder	*coder;
 	long	priority;
 }		t_heap;
+
+void	*ft_calloc(size_t len, size_t size);
+int		initialize(t_simulation *sim, char **args);
+int		check_args(t_simulation	*sim, char **args);
 
 #endif

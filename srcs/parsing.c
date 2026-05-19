@@ -6,8 +6,85 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 01:19:57 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/19 02:06:46 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/19 04:40:38 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/codexion.h"
 
+size_t	ft_strlen(char *s)
+{
+	int	i;
+
+	if (!s)
+		return (0);
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == 0)
+			return (0);
+		i++;
+	}
+	return (i);
+}
+
+void	*ft_memcpy(void *dest, const void *src, size_t n)
+{
+	size_t	i;
+
+	if (!dest && !src)
+		return (NULL);
+	i = 0;
+	while (i < n)
+	{
+		*(unsigned char *)(dest + i) = *(unsigned char *)(src + i);
+		i++;
+	}
+	*(unsigned char *)(dest + i) = 0;
+	return (dest);
+}
+
+char	*append(char *s1, char *s2)
+{
+	size_t	len;
+	size_t	s1_len;
+	size_t	s2_len;
+	char	*dest;
+
+	if (!s1 && !s2)
+		return (NULL);
+	s1_len = ft_strlen(s1);
+	s2_len = ft_strlen(s2);
+	len = s1_len + s2_len;
+	dest = malloc(len + 1);
+	if (!dest)
+		return (NULL);
+	ft_memcpy(dest, s1, s1_len);
+	ft_memcpy(dest + s1_len, s2, s2_len);
+	free(s1);
+	dest[len] = 0;
+	return (dest);
+}
+
+int	check_args(t_simulation *sim, char **args)
+{
+	if (atoi(args[1]) < 1)
+		sim->errors = append(sim->errors, "Invalid number of coders value\n");
+	if (atoi(args[2]) < 1)
+		sim->errors = append(sim->errors, "Invalid time to burnout value\n");
+	if (atoi(args[3]) < 1)
+		sim->errors = append(sim->errors, "Invalid time to compile value\n");
+	if (atoi(args[4]) < 1)
+		sim->errors = append(sim->errors, "Invalid time to debug value\n");
+	if (atoi(args[5]) < 1)
+		sim->errors = append(sim->errors, "Invalid time to refactor value\n");
+	if (atoi(args[6]) < 1)
+		sim->errors = append(sim->errors, "Invalid number of compile value\n");
+	if (atoi(args[7]) < 1)
+		sim->errors = append(sim->errors, "Invalid dongle cooldown value\n");
+	if ((strcmp("fifo", args[8]) != 0) && (strcmp("edf", args[8]) != 0))
+		sim->errors = append(sim->errors, "Unexpected scheduler\n");
+	if (ft_strlen(sim->errors))
+		return (1);
+	return (0);
+}
