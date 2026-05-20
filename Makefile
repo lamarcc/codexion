@@ -4,7 +4,6 @@ RM		= rm -rf
 CFLAGS	= -Wall -Wextra -Werror -pthread -g
 INCDIR	= includes
 SRCDIR	= srcs
-SCHDIR	= scheduler
 UTILS	= utils
 HEADERS	= includes/codexion.h
 OBJDIR	= .obj
@@ -12,10 +11,7 @@ OBJDIR	= .obj
 SRCS	=	$(SRCDIR)/main.c \
 			$(SRCDIR)/parsing.c \
 			$(SRCDIR)/init.c \
-			$(SRCDIR)/coder.c \
-			$(SRCDIR)/monitor.c \
-			$(SRCDIR)/dongle.c \
-			$(SCHDIR)/heap.c \
+			$(SRCDIR)/simulation.c \
 			$(UTILS)/utils.c
 
 OBJS	= $(SRCS:%.c=$(OBJDIR)/%.o)

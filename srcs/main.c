@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/19 05:34:56 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/20 04:59:24 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	error(t_simulation *sim)
 	return (1);
 }
 
-int	cleanup(t_simulation *sim)
+void	cleanup(t_simulation *sim)
 {
 	int	i;
 
@@ -39,7 +39,6 @@ int	cleanup(t_simulation *sim)
 	pthread_mutex_destroy(&sim->mutex_log);
 	pthread_mutex_destroy(&sim->mutex_sim);
 	free(sim);
-	return (0);
 }
 
 int	main(int c, char **v)
@@ -52,14 +51,24 @@ int	main(int c, char **v)
 	if (check_args(sim, v))
 		return (error(sim));
 	if (initialize(sim, v))
-		return (error(sim));
-	printf("%d\n", sim->nb_coders);
-	printf("%ld\n", sim->time_burnout);
-	printf("%ld\n", sim->time_compile);
-	printf("%ld\n", sim->time_debug);
-	printf("%ld\n", sim->time_refactor);
-	printf("%d\n", sim->nb_compile);
-	printf("%ld\n", sim->dongle_cooldown);
-	printf("%d\n", sim->scheduler);
+	{
+		cleanup(sim);
+		return (1);
+	}
+	run(sim);
+	// printf("%d\n", sim->nb_coders);
+	// printf("%ld\n", sim->time_burnout);
+	// printf("%ld\n", sim->time_compile);
+	// printf("%ld\n", sim->time_debug);
+	// printf("%ld\n", sim->time_refactor);
+	// printf("%d\n", sim->nb_compile);
+	// printf("%ld\n", sim->dongle_cooldown);
+	// printf("%d\n", sim->scheduler);
+	int i = 0;
+	while(i < sim->nb_coders)
+	{
+		pthread_join(sim->coders[i].thread, NULL);
+		i++;
+	}
 	cleanup(sim);
 }

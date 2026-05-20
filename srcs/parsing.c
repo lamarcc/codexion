@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 01:19:57 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/19 04:40:38 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/19 11:17:05 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ char	*append(char *s1, char *s2)
 	dest[len] = 0;
 	return (dest);
 }
-
+// verif overflow atoi
 int	check_args(t_simulation *sim, char **args)
 {
 	if (atoi(args[1]) < 1)

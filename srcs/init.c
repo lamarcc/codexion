@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 03:42:28 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/19 05:21:58 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/20 03:53:50 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	init_coders(t_simulation *sim)
 		sim->coders[i].nb_compile = 0;
 		sim->coders[i].previous_compile_start = 0;
 		if (pthread_mutex_init(&sim->coders[i].mutex, NULL) != 0)
-			return (1);
+		return (1);
 		sim->coders[i].left_d = &sim->dongles[i];
 		sim->coders[i].right_d = &sim->dongles[(i + 1) % sim->nb_coders];
 		sim->coders[i].sim = sim;
@@ -63,6 +63,8 @@ int	initialize(t_simulation *sim, char **args)
 	sim->time_refactor = atoi(args[5]);
 	sim->nb_compile = atoi(args[6]);
 	sim->dongle_cooldown = atoi(args[7]);
+	sim->bite = false;
+	sim->coder_ready = 0;
 	if (strcmp("fifo", args[8]) == 0)
 		sim->scheduler = TRUE;
 	else

@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/19 05:21:49 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/20 03:53:15 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <string.h>
 # include <unistd.h>
 # include <pthread.h>
+# include <stdbool.h>
 
 # define TRUE 1
 # define FALSE 0
@@ -38,10 +39,12 @@ typedef struct s_simulation
 	long				dongle_cooldown;
 	long				start_time;
 	char				*errors;
+	bool 				bite;
+	int					coder_ready;
 	pthread_mutex_t		mutex_log;
 	pthread_mutex_t		mutex_sim;
 	struct s_coder		*coders;
-	struct s_dongle		*dongles;	
+	struct s_dongle		*dongles;
 }		t_simulation;
 
 typedef struct s_coder
@@ -49,6 +52,7 @@ typedef struct s_coder
 	int				id;
 	int				nb_compile;
 	long			previous_compile_start;
+	pthread_t		thread;
 	pthread_mutex_t	mutex;
 	struct s_dongle	*left_d;
 	struct s_dongle	*right_d;
@@ -74,5 +78,6 @@ typedef struct s_heap
 void	*ft_calloc(size_t len, size_t size);
 int		initialize(t_simulation *sim, char **args);
 int		check_args(t_simulation	*sim, char **args);
+int		run(t_simulation *sim);
 
 #endif
