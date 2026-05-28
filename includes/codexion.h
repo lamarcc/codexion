@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/20 03:53:15 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/28 05:23:46 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ typedef struct s_simulation
 	long				dongle_cooldown;
 	long				start_time;
 	char				*errors;
-	bool 				bite;
-	int					coder_ready;
 	pthread_mutex_t		mutex_log;
 	pthread_mutex_t		mutex_sim;
 	struct s_coder		*coders;
@@ -61,19 +59,21 @@ typedef struct s_coder
 
 typedef struct s_dongle
 {
+	int				id;
 	int				taken;
+	// int				heap_size;
 	long			last_released;
 	pthread_mutex_t	mutex;
 	pthread_cond_t	cond;
-	struct s_heap	*heap;
-	int				heap_size;
+	t_coder			*first;
+	t_coder			*second;
 }		t_dongle;
 
-typedef struct s_heap
-{
-	t_coder	*coder;
-	long	priority;
-}		t_heap;
+// typedef struct s_heap
+// {
+// 	char	*list;
+// 	t_coder	*coder;
+// }		t_heap;
 
 void	*ft_calloc(size_t len, size_t size);
 int		initialize(t_simulation *sim, char **args);

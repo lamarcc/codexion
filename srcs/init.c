@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 03:42:28 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/20 03:53:50 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/28 05:24:22 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,13 @@ int	init_dongles(t_simulation *sim)
 	i = 0;
 	while (i < sim->nb_coders)
 	{
+		sim->dongles[i].id = i + 1;
 		sim->dongles[i].taken = 0;
 		sim->dongles[i].last_released = 0;
 		if (pthread_mutex_init(&sim->dongles[i].mutex, NULL) != 0)
 			return (1);
 		if (pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
 			return (1);
-		sim->dongles[i].heap = calloc(sim->nb_coders, sizeof(t_heap));
-		if (!sim->dongles[i].heap)
-			return (1);
-		sim->dongles[i].heap_size = 0;
 		i++;
 	}
 	return (0);
@@ -45,7 +42,7 @@ int	init_coders(t_simulation *sim)
 		sim->coders[i].nb_compile = 0;
 		sim->coders[i].previous_compile_start = 0;
 		if (pthread_mutex_init(&sim->coders[i].mutex, NULL) != 0)
-		return (1);
+			return (1);
 		sim->coders[i].left_d = &sim->dongles[i];
 		sim->coders[i].right_d = &sim->dongles[(i + 1) % sim->nb_coders];
 		sim->coders[i].sim = sim;
@@ -63,8 +60,6 @@ int	initialize(t_simulation *sim, char **args)
 	sim->time_refactor = atoi(args[5]);
 	sim->nb_compile = atoi(args[6]);
 	sim->dongle_cooldown = atoi(args[7]);
-	sim->bite = false;
-	sim->coder_ready = 0;
 	if (strcmp("fifo", args[8]) == 0)
 		sim->scheduler = TRUE;
 	else
@@ -79,5 +74,22 @@ int	initialize(t_simulation *sim, char **args)
 		return (1);
 	if (init_coders(sim))
 		return (1);
+	int i = 0;
+	while (i < sim->nb_coders)
+	{
+		if (i%2==0)
+		{
+			sim->dongles[i].first = &sim->coders[i];
+			if (sim->coders[(i + 1) % sim->nb_coders].id != 0)
+				sim->dongles[i].second = &sim->coders[i + 1];
+		}
+		else
+		{
+			sim->dongles[i].first = &sim->coders[(i+1)%sim->nb_coders];
+			if (sim->coders[(i + 1) % sim->nb_coders].id != 0)
+				sim->dongles[i].second = &sim->coders[i];
+		}
+		i++;
+	}
 	return (0);
 }
