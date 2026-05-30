@@ -6,104 +6,121 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/28 05:41:28 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/30 05:09:43 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/codexion.h"
 
-int	take_dongle(t_coder *coder)
+void	update_time(t_simulation *sim)
 {
-	t_dongle	*min;
-	t_dongle	*max;
+	struct timeval	t;
 
-	pthread_mutex_lock(&coder->mutex);
-	if (coder->left_d->id < coder->right_d->id)
-	{
-		max = coder->right_d;
-		min = coder->left_d;
-	}
-	else
-	{
-		max = coder->left_d;
-		min = coder->right_d;
-	}
-	pthread_mutex_unlock(&coder->mutex);
-	if (!min->taken)
-	{
-		if (!max->taken)
-		{
-			min->taken = 1;
-			max->taken = 1;
-			return (0);
-		}
-		return (1);
-	}
-	return (1);
-}
-
-int	leave_dongle(t_coder *coder)
-{
-	pthread_mutex_lock(&coder->mutex);
-	coder->left_d->taken = 0;
-	coder->right_d->taken = 0;
-	pthread_mutex_unlock(&coder->mutex);
-	return (0);
+	gettimeofday(&t, NULL);
+	pthread_mutex_lock(&sim->mutex_sim);
+	sim->time = (t.tv_sec * 1000) + (t.tv_usec / 1000) - sim->start_time;
+	pthread_mutex_unlock(&sim->mutex_sim);
 }
 
 void	*routine(void *arg)
 {
-	t_coder		*coder;
-	pthread_t	t;
-	// bool	f;
+	t_coder			*coder;
 
 	coder = (t_coder *)arg;
-	t = pthread_self();
-	printf("coder left: %d, coder right: %d\n", coder->left_d->first->id, coder->right_d->first->id);
-	// pthread_mutex_lock(&coder->mutex);
-	// if (coder->left_d->first == coder && coder->right_d->first == coder)
-	// 	f = true;
-	// else
-	// 	f = false;
-	// pthread_mutex_unlock(&coder->mutex);
-	// if (f)
-	// {
-	// 	if (!take_dongle(coder))
-	// 	{
-	// 		pthread_mutex_lock(&coder->sim->mutex_log);
-	// 		printf("%d, %ld take dongles\n", coder->id, t);
-	// 		pthread_mutex_unlock(&coder->sim->mutex_log);
-	// 		leave_dongle(coder);
-	// 	}
-	// }
-	// else
-	// {
-	// 	pthread_mutex_lock(&coder->sim->mutex_log);
-	// 	printf("no dongle for : %d, %ld\n", coder->id, t);
-	// 	pthread_mutex_unlock(&coder->sim->mutex_log);
-	// }
+	while (TRUE)
+	{
+		if (coder->left_d->id > coder->right_d->id)
+		{
+			coder->first = coder->right_d;
+			coder->second = coder->left_d;
+		}
+		else
+		{
+			coder->first = coder->left_d;
+			coder->second = coder->right_d;
+		}
+		pthread_mutex_lock(&coder->first->mutex);
+		if (coder->first->waiting[0] == NULL)
+			coder->first->waiting[0] = coder;
+		else
+			coder->first->waiting[1] = coder;
+		while (coder->first->waiting[0] != coder || coder->first->taken)
+			pthread_cond_wait(&coder->first->cond, &coder->first->mutex);
+		coder->first->taken = TRUE;
+		pthread_mutex_unlock(&coder->first->mutex);
+		pthread_mutex_lock(&coder->second->mutex);
+		if (coder->second->waiting[0] == NULL)
+			coder->second->waiting[0] = coder;
+		else
+			coder->second->waiting[1] = coder;
+		while (coder->second->waiting[0] != coder || coder->second->taken)
+			pthread_cond_wait(&coder->second->cond, &coder->second->mutex);
+		coder->second->taken = TRUE;
+		pthread_mutex_unlock(&coder->second->mutex);
+		update_time(coder->sim);
+		pthread_mutex_lock(&coder->sim->mutex_log);
+		printf("%ld %d has taken a dongle\n", coder->sim->time, coder->id);
+		printf("%ld %d has taken a dongle\n", coder->sim->time, coder->id);
+		printf("%ld %d is compiling\n", coder->sim->time, coder->id);
+		pthread_mutex_unlock(&coder->sim->mutex_log);
+		usleep(coder->sim->compile_time * 1000);
+		pthread_mutex_lock(&coder->first->mutex);
+		coder->first->taken = FALSE;
+		coder->first->waiting[0] = coder->first->waiting[1];
+		coder->first->waiting[1] = NULL;
+		pthread_cond_broadcast(&coder->first->cond);
+		pthread_mutex_unlock(&coder->first->mutex);
+		pthread_mutex_lock(&coder->second->mutex);
+		coder->second->taken = FALSE;
+		coder->second->waiting[0] = coder->second->waiting[1];
+		coder->second->waiting[1] = NULL;
+		pthread_cond_broadcast(&coder->second->cond);
+		pthread_mutex_unlock(&coder->second->mutex);
+		update_time(coder->sim);
+		pthread_mutex_lock(&coder->sim->mutex_log);
+		printf("%ld %d is debugging\n", coder->sim->time, coder->id);
+		pthread_mutex_unlock(&coder->sim->mutex_log);
+		usleep(coder->sim->debug_time * 1000);
+		update_time(coder->sim);
+		pthread_mutex_lock(&coder->sim->mutex_log);
+		printf("%ld %d is refactoring\n", coder->sim->time, coder->id);
+		pthread_mutex_unlock(&coder->sim->mutex_log);
+		usleep(coder->sim->refactor_time * 1000);
+		pthread_mutex_lock(&coder->sim->mutex_sim);
+		coder->nb_compile += 1;
+		if (coder->nb_compile == 10)
+		{
+			pthread_mutex_unlock(&coder->sim->mutex_sim);
+			break ;
+		}
+		pthread_mutex_unlock(&coder->sim->mutex_sim);
+	}
 	return (NULL);
 }
 
 int	run(t_simulation *sim)
 {
 	int	i;
+	struct timeval t;
 
 	int a = 0;
-	while (a < 2)
+	gettimeofday(&t, NULL);
+	pthread_mutex_lock(&sim->mutex_sim);
+	sim->start_time = (t.tv_sec * 1000) + (t.tv_usec / 1000);
+	pthread_mutex_unlock(&sim->mutex_sim);
+	while (a < 1)
 	{
 		i = 0;
 		while (i < sim->nb_coders)
 		{
 			pthread_create(&sim->coders[i].thread, NULL, &routine, &sim->coders[i]);
+			// regler le retour
 			usleep(10);
 			i++;
 		}
-		// printf("\n");
-		// i = 0;
 		// while (i < sim->nb_coders)
 		// {
-		// 	printf("dongles n%d, first coder: %d, second coder: %d\n", i, sim->dongles[i].first->id, sim->dongles[i].second->id);
+		// 	printf("dongles n%d, left coder: %d, right coder: %d\n", i, sim->dongles[i].left->id, sim->dongles[i].right->id);
 		// 	i++;
 		// }
 		// printf("\nAfter swap\n");
@@ -111,10 +128,10 @@ int	run(t_simulation *sim)
 		// t_coder *t;
 		// while (i < sim->nb_coders)
 		// {
-		// 	t = sim->dongles[i].first;
-		// 	sim->dongles[i].first = sim->dongles[i].second;
-		// 	sim->dongles[i].second = t;
-		// 	printf("dongles n%d, first coder: %d, second coder: %d\n", i, sim->dongles[i].first->id, sim->dongles[i].second->id);
+		// 	t = sim->dongles[i].right;
+		// 	sim->dongles[i].right = sim->dongles[i].left;
+		// 	sim->dongles[i].left = t;
+		// 	printf("dongles n%d, left coder: %d, right coder: %d\n", i, sim->dongles[i].left->id, sim->dongles[i].right->id);
 		// 	i++;
 		// }
 		a++;

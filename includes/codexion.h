@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/28 05:23:46 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/30 03:19:01 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <unistd.h>
 # include <pthread.h>
 # include <stdbool.h>
+# include <sys/time.h>
 
 # define TRUE 1
 # define FALSE 0
@@ -32,12 +33,13 @@ typedef struct s_simulation
 	int					nb_compile;
 	int					end_simulation;
 	int					scheduler;
-	long				time_burnout;
-	long				time_compile;
-	long				time_debug;
-	long				time_refactor;
+	long				burnout_time;
+	long				compile_time;
+	long				debug_time;
+	long				refactor_time;
 	long				dongle_cooldown;
 	long				start_time;
+	long				time;
 	char				*errors;
 	pthread_mutex_t		mutex_log;
 	pthread_mutex_t		mutex_sim;
@@ -49,11 +51,14 @@ typedef struct s_coder
 {
 	int				id;
 	int				nb_compile;
+	int				has_dongle;
 	long			previous_compile_start;
 	pthread_t		thread;
 	pthread_mutex_t	mutex;
 	struct s_dongle	*left_d;
 	struct s_dongle	*right_d;
+	struct s_dongle	*first;
+	struct s_dongle	*second;
 	t_simulation	*sim;
 }		t_coder;
 
@@ -61,19 +66,13 @@ typedef struct s_dongle
 {
 	int				id;
 	int				taken;
-	// int				heap_size;
 	long			last_released;
 	pthread_mutex_t	mutex;
 	pthread_cond_t	cond;
-	t_coder			*first;
-	t_coder			*second;
+	struct s_coder	*left;
+	struct s_coder	*right;
+	struct s_coder	*waiting[2];
 }		t_dongle;
-
-// typedef struct s_heap
-// {
-// 	char	*list;
-// 	t_coder	*coder;
-// }		t_heap;
 
 void	*ft_calloc(size_t len, size_t size);
 int		initialize(t_simulation *sim, char **args);

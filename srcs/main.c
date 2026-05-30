@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/28 02:44:36 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/29 01:31:34 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,10 @@ int	main(int c, char **v)
 	}
 	run(sim);
 	// printf("%d\n", sim->nb_coders);
-	// printf("%ld\n", sim->time_burnout);
-	// printf("%ld\n", sim->time_compile);
-	// printf("%ld\n", sim->time_debug);
-	// printf("%ld\n", sim->time_refactor);
+	// printf("%ld\n", sim->burnout_time);
+	// printf("%ld\n", sim->compile_time);
+	// printf("%ld\n", sim->debug_time);
+	// printf("%ld\n", sim->refactor_time);
 	// printf("%d\n", sim->nb_compile);
 	// printf("%ld\n", sim->dongle_cooldown);
 	// printf("%d\n", sim->scheduler);
