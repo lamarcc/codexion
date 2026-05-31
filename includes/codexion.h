@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/30 03:19:01 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/31 02:04:07 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,13 @@ typedef struct s_simulation
 	long				start_time;
 	long				time;
 	char				*errors;
-	pthread_mutex_t		mutex_log;
-	pthread_mutex_t		mutex_sim;
+	pthread_t			monitor;
+	struct timeval		t;
+	pthread_mutex_t		mutex;
+	pthread_mutex_t		mutex_mon;
 	struct s_coder		*coders;
 	struct s_dongle		*dongles;
+	struct s_coder		*coder_verif;
 }		t_simulation;
 
 typedef struct s_coder
@@ -52,7 +55,7 @@ typedef struct s_coder
 	int				id;
 	int				nb_compile;
 	int				has_dongle;
-	long			previous_compile_start;
+	long			previous_compile;
 	pthread_t		thread;
 	pthread_mutex_t	mutex;
 	struct s_dongle	*left_d;
@@ -71,9 +74,15 @@ typedef struct s_dongle
 	pthread_cond_t	cond;
 	struct s_coder	*left;
 	struct s_coder	*right;
-	struct s_coder	*waiting[2];
+	struct s_coder	*queue[2];
 }		t_dongle;
 
+void	cleanup(t_simulation *sim);
+void	take_dongle(t_coder *coder);
+void	leave_dongle(t_coder *coder);
+void	start_time(t_simulation *sim);
+void	update_time(t_simulation *sim);
+void	update_compile_time(t_coder *coder);
 void	*ft_calloc(size_t len, size_t size);
 int		initialize(t_simulation *sim, char **args);
 int		check_args(t_simulation	*sim, char **args);

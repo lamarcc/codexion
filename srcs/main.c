@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/29 01:31:34 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/31 01:41:46 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,13 @@ void	cleanup(t_simulation *sim)
 	int	i;
 
 	i = 0;
+	pthread_join(sim->monitor, NULL);
+	while (i < sim->nb_coders)
+	{
+		pthread_join(sim->coders[i].thread, NULL);
+		i++;
+	}
+	i = 0;
 	while (i < sim->nb_coders)
 	{
 		pthread_mutex_destroy(&sim->dongles[i].mutex);
@@ -35,8 +42,8 @@ void	cleanup(t_simulation *sim)
 	}
 	free(sim->dongles);
 	free(sim->coders);
-	pthread_mutex_destroy(&sim->mutex_log);
-	pthread_mutex_destroy(&sim->mutex_sim);
+	pthread_mutex_destroy(&sim->mutex);
+	pthread_mutex_destroy(&sim->mutex_mon);
 	free(sim);
 }
 
@@ -55,19 +62,5 @@ int	main(int c, char **v)
 		return (1);
 	}
 	run(sim);
-	// printf("%d\n", sim->nb_coders);
-	// printf("%ld\n", sim->burnout_time);
-	// printf("%ld\n", sim->compile_time);
-	// printf("%ld\n", sim->debug_time);
-	// printf("%ld\n", sim->refactor_time);
-	// printf("%d\n", sim->nb_compile);
-	// printf("%ld\n", sim->dongle_cooldown);
-	// printf("%d\n", sim->scheduler);
-	int i = 0;
-	while(i < sim->nb_coders)
-	{
-		pthread_join(sim->coders[i].thread, NULL);
-		i++;
-	}
 	cleanup(sim);
 }

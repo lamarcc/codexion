@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 03:42:28 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/30 03:52:39 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/31 04:33:16 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ int	init_dongles(t_simulation *sim)
 			return (1);
 		sim->dongles[i].left = NULL;
 		sim->dongles[i].right = NULL;
-		sim->dongles[i].waiting[0] = NULL;
-		sim->dongles[i].waiting[1] = NULL;
+		sim->dongles[i].queue[0] = NULL;
+		sim->dongles[i].queue[1] = NULL;
 		i++;
 	}
 	return (0);
@@ -45,7 +45,7 @@ int	init_coders(t_simulation *sim)
 		sim->coders[i].id = i + 1;
 		sim->coders[i].has_dongle = FALSE;
 		sim->coders[i].nb_compile = 0;
-		sim->coders[i].previous_compile_start = 0;
+		sim->coders[i].previous_compile = 9999999999;
 		if (pthread_mutex_init(&sim->coders[i].mutex, NULL) != 0)
 			return (1);
 		sim->coders[i].left_d = &sim->dongles[i];
@@ -53,6 +53,7 @@ int	init_coders(t_simulation *sim)
 		sim->coders[i].first = NULL;
 		sim->coders[i].second = NULL;
 		sim->coders[i].sim = sim;
+		sim->coders[i].thread = 0;
 		i++;
 	}
 	return (0);
@@ -69,13 +70,14 @@ int	initialize(t_simulation *sim, char **args)
 	sim->dongle_cooldown = atoi(args[7]);
 	sim->time = 0;
 	sim->start_time = 0;
+	sim->monitor = 0;
 	if (strcmp("fifo", args[8]) == 0)
 		sim->scheduler = TRUE;
 	else
 		sim->scheduler = FALSE;
-	if (pthread_mutex_init(&sim->mutex_log, NULL) != 0)
+	if (pthread_mutex_init(&sim->mutex, NULL) != 0)
 		return (1);
-	if (pthread_mutex_init(&sim->mutex_sim, NULL) != 0)
+	if (pthread_mutex_init(&sim->mutex_mon, NULL) != 0)
 		return (1);
 	sim->coders = calloc(sim->nb_coders, sizeof(t_coder));
 	sim->dongles = calloc(sim->nb_coders, sizeof(t_dongle));

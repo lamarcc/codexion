@@ -12,6 +12,9 @@ SRCS	=	$(SRCDIR)/main.c \
 			$(SRCDIR)/parsing.c \
 			$(SRCDIR)/init.c \
 			$(SRCDIR)/simulation.c \
+			$(SRCDIR)/dongle.c \
+			$(SRCDIR)/time.c \
+			$(SRCDIR)/queue.c \
 			$(UTILS)/utils.c
 
 OBJS	= $(SRCS:%.c=$(OBJDIR)/%.o)
