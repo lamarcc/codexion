@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/31 06:03:28 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/31 06:29:13 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ void	*check_burnout(void *arg)
 	int				i;
 	long			time;
 	long			burnout_check;
-	struct timeval	monitor_t;
 	t_simulation	*sim;
+	struct timeval	monitor_t;
 
 	sim = (t_simulation *)arg;
 	while (TRUE)
