@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/31 01:41:46 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/31 06:06:19 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,10 @@ void	cleanup(t_simulation *sim)
 	pthread_join(sim->monitor, NULL);
 	while (i < sim->nb_coders)
 	{
-		pthread_join(sim->coders[i].thread, NULL);
+		if (sim->coders[i].thread != 0)
+			pthread_join(sim->coders[i].thread, NULL);
+		else
+			break ;
 		i++;
 	}
 	i = 0;

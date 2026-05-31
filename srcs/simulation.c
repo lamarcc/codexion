@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/31 02:36:28 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/31 06:03:28 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	*routine(void *arg)
 	t_coder			*coder;
 
 	coder = (t_coder *)arg;
-	while (TRUE)
+	while (!coder->sim->end_simulation)
 	{
 		compile(coder);
 		debug(coder);
@@ -83,9 +83,13 @@ void	*check_burnout(void *arg)
 			time = (monitor_t.tv_sec * 1000) + (monitor_t.tv_usec / 1000);
 			if (time > burnout_check)
 			{
+				pthread_mutex_lock(&sim->mutex_mon);
+				sim->end_simulation = TRUE;
+				pthread_mutex_unlock(&sim->mutex_mon);
 				printf("%ld %d has burned out", time, sim->coders[i].id);
 				cleanup(sim);
 			}
+			usleep(1000);
 			i++;
 		}
 	}
