@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/31 02:04:07 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/31 23:19:43 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ typedef struct s_dongle
 }		t_dongle;
 
 void	cleanup(t_simulation *sim);
-void	take_dongle(t_coder *coder);
+int	take_dongle(t_coder *coder);
 void	leave_dongle(t_coder *coder);
 void	start_time(t_simulation *sim);
 void	update_time(t_simulation *sim);

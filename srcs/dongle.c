@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 00:00:19 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/31 02:23:55 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/05/31 23:19:35 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	find_first(t_coder *coder)
 	}
 }
 
-void	take_dongle(t_coder *coder)
+int	take_dongle(t_coder *coder)
 {
 	find_first(coder);
 	pthread_mutex_lock(&coder->first->mutex);
@@ -36,6 +36,11 @@ void	take_dongle(t_coder *coder)
 		coder->first->queue[1] = coder;
 	while (coder->first->queue[0] != coder || coder->first->taken)
 		pthread_cond_wait(&coder->first->cond, &coder->first->mutex);
+	if (coder->sim->end_simulation)
+	{
+		pthread_mutex_unlock(&coder->first->mutex);
+		return (1);
+	}
 	pthread_mutex_lock(&coder->second->mutex);
 	if (coder->second->queue[0] == NULL)
 		coder->second->queue[0] = coder;
@@ -47,6 +52,7 @@ void	take_dongle(t_coder *coder)
 	coder->second->taken = TRUE;
 	pthread_mutex_unlock(&coder->first->mutex);
 	pthread_mutex_unlock(&coder->second->mutex);
+	return (0);
 }
 
 void	leave_dongle(t_coder *coder)
