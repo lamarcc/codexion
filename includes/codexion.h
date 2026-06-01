@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/31 23:19:43 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/01 05:12:38 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ typedef struct s_simulation
 	pthread_mutex_t		mutex_mon;
 	struct s_coder		*coders;
 	struct s_dongle		*dongles;
-	struct s_coder		*coder_verif;
 }		t_simulation;
 
 typedef struct s_coder
@@ -55,6 +54,7 @@ typedef struct s_coder
 	int				id;
 	int				nb_compile;
 	int				has_dongle;
+	int				finished;
 	long			previous_compile;
 	pthread_t		thread;
 	pthread_mutex_t	mutex;

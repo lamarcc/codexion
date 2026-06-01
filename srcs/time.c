@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/30 23:03:54 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/31 01:42:06 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/01 05:12:21 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,5 @@ void	update_compile_time(t_coder *coder)
 {
 	pthread_mutex_lock(&coder->mutex);
 	coder->previous_compile = coder->sim->time;
-	coder->sim->coder_verif = coder;
 	pthread_mutex_unlock(&coder->mutex);
 }
