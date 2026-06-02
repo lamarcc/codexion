@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/01 05:51:01 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/02 05:19:47 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,16 +71,21 @@ void	*routine(void *arg)
 	{
 		if (compile(coder))
 		{
+			if (!coder->nb_compile)
+			{
+				update_compile_time(coder);
+				return (NULL);
+			}
 			leave_dongle(coder);
 			return (NULL);
 		}
+		pthread_mutex_lock(&coder->sim->mutex);
+		coder->nb_compile += 1;
+		pthread_mutex_unlock(&coder->sim->mutex);
 		if (debug(coder))
 			return (NULL);
 		if (refactor(coder))
 			return (NULL);
-		pthread_mutex_lock(&coder->sim->mutex);
-		coder->nb_compile += 1;
-		pthread_mutex_unlock(&coder->sim->mutex);
 		pthread_mutex_lock(&coder->mutex);
 		if (coder->nb_compile == coder->sim->nb_compile)
 		{
@@ -140,7 +145,7 @@ void	*check_burnout(void *arg)
 					j++;
 				}
 				pthread_mutex_lock(&sim->mutex);
-				printf("%ld %d burned out\n", sim->time, sim->coders[i].id);
+				printf("%ld %d burned out\n", burnout_check, sim->coders[i].id);
 				pthread_mutex_unlock(&sim->mutex);
 				return (NULL);
 			}

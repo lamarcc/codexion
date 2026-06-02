@@ -6,14 +6,16 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 00:00:19 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/01 04:54:37 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/02 05:14:42 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/codexion.h"
 
-static void	find_first(t_coder *coder)
+static int	find_first(t_coder *coder)
 {
+	if (coder->left_d == coder->right_d)
+		return (1);
 	if (coder->left_d->id > coder->right_d->id)
 	{
 		coder->first = coder->right_d;
@@ -24,6 +26,7 @@ static void	find_first(t_coder *coder)
 		coder->first = coder->left_d;
 		coder->second = coder->right_d;
 	}
+	return (0);
 }
 
 int	take_dongle(t_coder *coder)
@@ -31,7 +34,8 @@ int	take_dongle(t_coder *coder)
 	struct timeval	t;
 	long			time;
 
-	find_first(coder);
+	if (find_first(coder))
+		return (1);
 	pthread_mutex_lock(&coder->first->mutex);
 	if (coder->first->queue[0] == NULL)
 		coder->first->queue[0] = coder;
@@ -44,11 +48,6 @@ int	take_dongle(t_coder *coder)
 		{
 			gettimeofday(&t, NULL);
 			time = ((t.tv_sec * 1000) + (t.tv_usec / 1000) - coder->sim->start_time);
-			// if (coder->nb_compile == 1)
-			// {
-			// 	printf("%ld     %ld\n", coder->first->last_released + coder->sim->dongle_cooldown, time);
-			// 	exit(1);
-			// }
 			if (time > coder->first->last_released + coder->sim->dongle_cooldown)
 				break ;
 		}
