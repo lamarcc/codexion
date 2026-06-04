@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/02 05:19:47 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/05 00:25:49 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,9 @@ int	compile(t_coder *coder)
 {
 	if (take_dongle(coder))
 		return (1);
-	pthread_mutex_lock(&coder->sim->mutex);
 	update_time(coder->sim);
 	update_compile_time(coder);
-	printf("%ld %d has taken a dongle\n", coder->sim->time, coder->id);
-	printf("%ld %d has taken a dongle\n", coder->sim->time, coder->id);
-	printf("%ld %d is compiling\n", coder->sim->time, coder->id);
-	pthread_mutex_unlock(&coder->sim->mutex);
+	compile_log(coder, coder->id);
 	usleep(coder->sim->compile_time * 1000);
 	leave_dongle(coder);
 	return (0);
@@ -30,34 +26,20 @@ int	compile(t_coder *coder)
 
 int	debug(t_coder *coder)
 {
-	pthread_mutex_lock(&coder->sim->mutex_mon);
-	if (coder->sim->end_simulation)
-	{
-		pthread_mutex_unlock(&coder->sim->mutex_mon);
+	if (is_simulation_over(coder->sim))
 		return (1);
-	}
-	pthread_mutex_unlock(&coder->sim->mutex_mon);
-	pthread_mutex_lock(&coder->sim->mutex);
 	update_time(coder->sim);
-	printf("%ld %d is debugging\n", coder->sim->time, coder->id);
-	pthread_mutex_unlock(&coder->sim->mutex);
+	debug_log(coder, coder->id);
 	usleep(coder->sim->debug_time * 1000);
 	return (0);
 }
 
 int	refactor(t_coder *coder)
 {
-	pthread_mutex_lock(&coder->sim->mutex_mon);
-	if (coder->sim->end_simulation)
-	{
-		pthread_mutex_unlock(&coder->sim->mutex_mon);
+	if (is_simulation_over(coder->sim))
 		return (1);
-	}
-	pthread_mutex_unlock(&coder->sim->mutex_mon);
-	pthread_mutex_lock(&coder->sim->mutex);
 	update_time(coder->sim);
-	printf("%ld %d is refactoring\n", coder->sim->time, coder->id);
-	pthread_mutex_unlock(&coder->sim->mutex);
+	refactor_log(coder, coder->id);
 	usleep(coder->sim->refactor_time * 1000);
 	return (0);
 }
@@ -67,7 +49,7 @@ void	*routine(void *arg)
 	t_coder			*coder;
 
 	coder = (t_coder *)arg;
-	while (!coder->sim->end_simulation)
+	while (!is_simulation_over(coder->sim))
 	{
 		if (compile(coder))
 		{
@@ -79,9 +61,9 @@ void	*routine(void *arg)
 			leave_dongle(coder);
 			return (NULL);
 		}
-		pthread_mutex_lock(&coder->sim->mutex);
+		pthread_mutex_lock(&coder->mutex);
 		coder->nb_compile += 1;
-		pthread_mutex_unlock(&coder->sim->mutex);
+		pthread_mutex_unlock(&coder->mutex);
 		if (debug(coder))
 			return (NULL);
 		if (refactor(coder))
@@ -90,9 +72,9 @@ void	*routine(void *arg)
 		if (coder->nb_compile == coder->sim->nb_compile)
 		{
 			pthread_mutex_unlock(&coder->mutex);
-			pthread_mutex_lock(&coder->sim->mutex);
+			pthread_mutex_lock(&coder->mutex);
 			coder->finished = TRUE;
-			pthread_mutex_unlock(&coder->sim->mutex);
+			pthread_mutex_unlock(&coder->mutex);
 			return (NULL);
 		}
 		pthread_mutex_unlock(&coder->mutex);
@@ -108,7 +90,6 @@ void	*check_burnout(void *arg)
 	long			time;
 	long			burnout_check;
 	t_simulation	*sim;
-	struct timeval	monitor_t;
 
 	sim = (t_simulation *)arg;
 	has_finished = 0;
@@ -117,26 +98,26 @@ void	*check_burnout(void *arg)
 		i = 0;
 		while (i < sim->nb_coders)
 		{
-			pthread_mutex_lock(&sim->mutex);
+			pthread_mutex_lock(&sim->coders[i].mutex);
 			if (sim->coders[i].finished)
 				has_finished += 1;
 			if (has_finished == sim->nb_coders)
 			{
-				pthread_mutex_unlock(&sim->mutex);
+				pthread_mutex_unlock(&sim->coders[i].mutex);
 				return (NULL);
 			}
-			pthread_mutex_unlock(&sim->mutex);
-			gettimeofday(&monitor_t, NULL);
-			time = (monitor_t.tv_sec * 1000) + (monitor_t.tv_usec / 1000);
+			pthread_mutex_unlock(&sim->coders[i].mutex);
+			time = get_time(sim);
 			pthread_mutex_lock(&sim->coders[i].mutex);
-			burnout_check = (time - sim->start_time) - sim->coders[i].previous_compile;
+			burnout_check = time - sim->coders[i].previous_compile;
 			pthread_mutex_unlock(&sim->coders[i].mutex);
 			if (burnout_check > sim->burnout_time && sim->coders[i].previous_compile > -1)
 			{
 				j = 0;
-				pthread_mutex_lock(&sim->mutex_mon);
+				burn_log(sim, sim->coders[i].id, time);
+				pthread_mutex_lock(&sim->mutex_sim);
 				sim->end_simulation = TRUE;
-				pthread_mutex_unlock(&sim->mutex_mon);
+				pthread_mutex_unlock(&sim->mutex_sim);
 				while (j < sim->nb_coders)
 				{
 					pthread_mutex_lock(&sim->dongles[j].mutex);
@@ -144,9 +125,6 @@ void	*check_burnout(void *arg)
 					pthread_mutex_unlock(&sim->dongles[j].mutex);
 					j++;
 				}
-				pthread_mutex_lock(&sim->mutex);
-				printf("%ld %d burned out\n", burnout_check, sim->coders[i].id);
-				pthread_mutex_unlock(&sim->mutex);
 				return (NULL);
 			}
 			i++;

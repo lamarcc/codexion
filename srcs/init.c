@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 03:42:28 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/01 02:19:43 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/04 22:46:43 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,9 @@ int	initialize(t_simulation *sim, char **args)
 		sim->scheduler = TRUE;
 	else
 		sim->scheduler = FALSE;
-	if (pthread_mutex_init(&sim->mutex, NULL) != 0)
+	if (pthread_mutex_init(&sim->mutex_sim, NULL) != 0)
 		return (1);
-	if (pthread_mutex_init(&sim->mutex_mon, NULL) != 0)
+	if (pthread_mutex_init(&sim->mutex_log, NULL) != 0)
 		return (1);
 	sim->coders = calloc(sim->nb_coders, sizeof(t_coder));
 	sim->dongles = calloc(sim->nb_coders, sizeof(t_dongle));
