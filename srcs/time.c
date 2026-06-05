@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/30 23:03:54 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/05 00:00:50 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/05 04:57:29 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,8 @@ long	get_time(t_simulation *sim)
 
 void	update_compile_time(t_coder *coder)
 {
-	long	time;
-
-	pthread_mutex_lock(&coder->sim->mutex_log);
-	time = coder->sim->time;
-	pthread_mutex_unlock(&coder->sim->mutex_log);
 	pthread_mutex_lock(&coder->mutex);
-	coder->previous_compile = time;
+	coder->previous_compile = get_time(coder->sim);
 	pthread_mutex_unlock(&coder->mutex);
 }
 

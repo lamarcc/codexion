@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/04 23:24:18 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/04 23:49:55 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/05 04:30:41 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	update_queue(t_coder *coder, t_dongle *dongle, int move)
 {
 	if (move)
 	{
-		if (coder->sim->scheduler)
-			entry(coder, dongle);	
+		// if (coder->sim->scheduler)
+		entry(coder, dongle);	
 		// else
 		// 	update_edf(dongle);
 	}

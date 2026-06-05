@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 03:42:28 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/04 22:46:43 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/05 04:14:22 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	init_dongles(t_simulation *sim)
 	{
 		sim->dongles[i].id = i + 1;
 		sim->dongles[i].taken = FALSE;
-		sim->dongles[i].last_released = 0;
+		sim->dongles[i].last_released = -1;
 		if (pthread_mutex_init(&sim->dongles[i].mutex, NULL) != 0)
 			return (1);
 		if (pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
@@ -46,11 +46,11 @@ int	init_coders(t_simulation *sim)
 		sim->coders[i].has_dongle = FALSE;
 		sim->coders[i].finished = FALSE;
 		sim->coders[i].nb_compile = 0;
-		sim->coders[i].previous_compile = -1;
+		sim->coders[i].previous_compile = 0;
 		if (pthread_mutex_init(&sim->coders[i].mutex, NULL) != 0)
 			return (1);
 		sim->coders[i].left_d = &sim->dongles[i];
-		sim->coders[i].right_d = &sim->dongles[(i + 1) % sim->nb_coders];
+		sim->coders[i].right_d = &sim->dongles[(i - 1 + sim->nb_coders) % sim->nb_coders];
 		sim->coders[i].first = NULL;
 		sim->coders[i].second = NULL;
 		sim->coders[i].sim = sim;
@@ -89,18 +89,8 @@ int	initialize(t_simulation *sim, char **args)
 	int i = 0;
 	while (i < sim->nb_coders)
 	{
-		if (i % 2==0)
-		{
-			sim->dongles[i].right = &sim->coders[i];
-			if (sim->coders[(i + 1) % sim->nb_coders].id != 0)
-				sim->dongles[i].left = &sim->coders[i + 1];
-		}
-		else
-		{
-			sim->dongles[i].left = &sim->coders[(i + 1) % sim->nb_coders];
-			if (sim->coders[(i + 1) % sim->nb_coders].id != 0)
-				sim->dongles[i].right = &sim->coders[i];
-		}
+		sim->dongles[i].right = &sim->coders[i];
+		sim->dongles[i].left = &sim->coders[(i + 1) % sim->nb_coders];
 		i++;
 	}
 	return (0);

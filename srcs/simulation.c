@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/05 00:25:49 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/05 05:43:40 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,20 +64,13 @@ void	*routine(void *arg)
 		pthread_mutex_lock(&coder->mutex);
 		coder->nb_compile += 1;
 		pthread_mutex_unlock(&coder->mutex);
+		has_coder_finished(coder);
 		if (debug(coder))
 			return (NULL);
 		if (refactor(coder))
 			return (NULL);
-		pthread_mutex_lock(&coder->mutex);
-		if (coder->nb_compile == coder->sim->nb_compile)
-		{
-			pthread_mutex_unlock(&coder->mutex);
-			pthread_mutex_lock(&coder->mutex);
-			coder->finished = TRUE;
-			pthread_mutex_unlock(&coder->mutex);
+		if (has_coder_finished(coder))
 			return (NULL);
-		}
-		pthread_mutex_unlock(&coder->mutex);
 	}
 	return (NULL);
 }
@@ -98,7 +91,6 @@ void	*check_burnout(void *arg)
 		i = 0;
 		while (i < sim->nb_coders)
 		{
-			pthread_mutex_lock(&sim->coders[i].mutex);
 			if (sim->coders[i].finished)
 				has_finished += 1;
 			if (has_finished == sim->nb_coders)
@@ -111,8 +103,10 @@ void	*check_burnout(void *arg)
 			pthread_mutex_lock(&sim->coders[i].mutex);
 			burnout_check = time - sim->coders[i].previous_compile;
 			pthread_mutex_unlock(&sim->coders[i].mutex);
-			if (burnout_check > sim->burnout_time && sim->coders[i].previous_compile > -1)
+			pthread_mutex_lock(&sim->coders[i].mutex);
+			if (burnout_check > sim->burnout_time && !sim->coders[i].finished)
 			{
+				pthread_mutex_unlock(&sim->coders[i].mutex);
 				j = 0;
 				burn_log(sim, sim->coders[i].id, time);
 				pthread_mutex_lock(&sim->mutex_sim);
@@ -127,6 +121,7 @@ void	*check_burnout(void *arg)
 				}
 				return (NULL);
 			}
+			pthread_mutex_unlock(&sim->coders[i].mutex);
 			i++;
 		}
 	}
@@ -138,6 +133,18 @@ int	run(t_simulation *sim)
 
 	start_time(sim);
 	i = 0;
+	// while (i < sim->nb_coders)
+	// {
+	// 	printf("coder: %d, left_d: %d, right_d: %d\n", sim->coders[i].id, sim->coders[i].left_d->id, sim->coders[i].right_d->id);
+	// 	i++;
+	// }
+	// i = 0;
+	// while (i < sim->nb_coders)
+	// {
+	// 	printf("dongle: %d, left_c: %d, right_c: %d\n", sim->dongles[i].id, sim->dongles[i].left->id, sim->dongles[i].right->id);
+	// 	i++;
+	// }
+	// i = 0;
 	while (i < sim->nb_coders)
 	{
 		if (pthread_create(&sim->coders[i].thread, NULL, &routine, &sim->coders[i]) != 0)

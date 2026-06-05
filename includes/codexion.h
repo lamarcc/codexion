@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/05 00:01:12 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/05 05:15:09 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int		initialize(t_simulation *sim, char **args);
 int		check_args(t_simulation	*sim, char **args);
 int		run(t_simulation *sim);
 int		take_dongle(t_coder *coder);
-int	is_simulation_over(t_simulation *sim);
+int		is_simulation_over(t_simulation *sim);
+int		has_coder_finished(t_coder *coder);
 
 #endif
