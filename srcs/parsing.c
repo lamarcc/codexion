@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 01:19:57 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/19 11:17:05 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/06 02:33:12 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,9 @@ int	check_args(t_simulation *sim, char **args)
 		sim->errors = append(sim->errors, "Invalid time to debug value\n");
 	if (atoi(args[5]) < 1)
 		sim->errors = append(sim->errors, "Invalid time to refactor value\n");
-	if (atoi(args[6]) < 1)
+	if (atoi(args[6]) < 0)
 		sim->errors = append(sim->errors, "Invalid number of compile value\n");
-	if (atoi(args[7]) < 1)
+	if (atoi(args[7]) < 0)
 		sim->errors = append(sim->errors, "Invalid dongle cooldown value\n");
 	if ((strcmp("fifo", args[8]) != 0) && (strcmp("edf", args[8]) != 0))
 		sim->errors = append(sim->errors, "Unexpected scheduler\n");

@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/05 05:43:40 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/06 02:26:14 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void	*check_burnout(void *arg)
 		i = 0;
 		while (i < sim->nb_coders)
 		{
+			pthread_mutex_lock(&sim->coders[i].mutex);
 			if (sim->coders[i].finished)
 				has_finished += 1;
 			if (has_finished == sim->nb_coders)
@@ -108,7 +109,7 @@ void	*check_burnout(void *arg)
 			{
 				pthread_mutex_unlock(&sim->coders[i].mutex);
 				j = 0;
-				burn_log(sim, sim->coders[i].id, time);
+				burn_log(sim, sim->coders[i].id, get_time(sim));
 				pthread_mutex_lock(&sim->mutex_sim);
 				sim->end_simulation = TRUE;
 				pthread_mutex_unlock(&sim->mutex_sim);
@@ -133,18 +134,6 @@ int	run(t_simulation *sim)
 
 	start_time(sim);
 	i = 0;
-	// while (i < sim->nb_coders)
-	// {
-	// 	printf("coder: %d, left_d: %d, right_d: %d\n", sim->coders[i].id, sim->coders[i].left_d->id, sim->coders[i].right_d->id);
-	// 	i++;
-	// }
-	// i = 0;
-	// while (i < sim->nb_coders)
-	// {
-	// 	printf("dongle: %d, left_c: %d, right_c: %d\n", sim->dongles[i].id, sim->dongles[i].left->id, sim->dongles[i].right->id);
-	// 	i++;
-	// }
-	// i = 0;
 	while (i < sim->nb_coders)
 	{
 		if (pthread_create(&sim->coders[i].thread, NULL, &routine, &sim->coders[i]) != 0)
