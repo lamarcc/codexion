@@ -1,7 +1,7 @@
 NAME	= codexion
 CC		= cc
 RM		= rm -rf
-CFLAGS	= -Wall -Wextra -Werror -pthread -g3
+CFLAGS	= -Wall -Wextra -Werror -pthread -fsanitize=thread
 INCDIR	= includes
 SRCDIR	= srcs
 UTILS	= utils
@@ -11,8 +11,7 @@ OBJDIR	= .obj
 SRCS	=	$(SRCDIR)/main.c \
 			$(SRCDIR)/parsing.c \
 			$(SRCDIR)/init.c \
-			$(SRCDIR)/monitor.c \
-			$(SRCDIR)/routine.c \
+			$(SRCDIR)/simulation.c \
 			$(SRCDIR)/dongle.c \
 			$(SRCDIR)/time.c \
 			$(SRCDIR)/queue.c \

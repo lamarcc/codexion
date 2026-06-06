@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 01:19:57 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/06 06:05:13 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/06 02:33:12 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,21 +65,22 @@ char	*append(char *s1, char *s2)
 	dest[len] = 0;
 	return (dest);
 }
+// verif overflow atoi
 int	check_args(t_simulation *sim, char **args)
 {
-	if (ft_atoi(args[1]) < 1)
+	if (atoi(args[1]) < 1)
 		sim->errors = append(sim->errors, "Invalid number of coders value\n");
-	if (ft_atoi(args[2]) < 1)
+	if (atoi(args[2]) < 1)
 		sim->errors = append(sim->errors, "Invalid time to burnout value\n");
-	if (ft_atoi(args[3]) < 1)
+	if (atoi(args[3]) < 1)
 		sim->errors = append(sim->errors, "Invalid time to compile value\n");
-	if (ft_atoi(args[4]) < 1)
+	if (atoi(args[4]) < 1)
 		sim->errors = append(sim->errors, "Invalid time to debug value\n");
-	if (ft_atoi(args[5]) < 1)
+	if (atoi(args[5]) < 1)
 		sim->errors = append(sim->errors, "Invalid time to refactor value\n");
-	if (ft_atoi(args[6]) < 0)
+	if (atoi(args[6]) < 0)
 		sim->errors = append(sim->errors, "Invalid number of compile value\n");
-	if (ft_atoi(args[7]) < 0)
+	if (atoi(args[7]) < 0)
 		sim->errors = append(sim->errors, "Invalid dongle cooldown value\n");
 	if ((strcmp("fifo", args[8]) != 0) && (strcmp("edf", args[8]) != 0))
 		sim->errors = append(sim->errors, "Unexpected scheduler\n");
