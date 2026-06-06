@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/05 05:15:09 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/06 02:43:04 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void	update_time(t_simulation *sim);
 void	update_compile_time(t_coder *coder);
 void	update_dongle_time(long start_time, t_dongle *dongle);
 void	*ft_calloc(size_t len, size_t size);
+void	*routine(void *arg);
 long	get_time(t_simulation *sim);
 int		initialize(t_simulation *sim, char **args);
 int		check_args(t_simulation	*sim, char **args);

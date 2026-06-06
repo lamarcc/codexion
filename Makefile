@@ -12,6 +12,7 @@ SRCS	=	$(SRCDIR)/main.c \
 			$(SRCDIR)/parsing.c \
 			$(SRCDIR)/init.c \
 			$(SRCDIR)/simulation.c \
+			$(SRCDIR)/routine.c \
 			$(SRCDIR)/dongle.c \
 			$(SRCDIR)/time.c \
 			$(SRCDIR)/queue.c \

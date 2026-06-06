@@ -6,74 +6,11 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/06 02:26:14 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/06 02:44:38 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/codexion.h"
-
-int	compile(t_coder *coder)
-{
-	if (take_dongle(coder))
-		return (1);
-	update_time(coder->sim);
-	update_compile_time(coder);
-	compile_log(coder, coder->id);
-	usleep(coder->sim->compile_time * 1000);
-	leave_dongle(coder);
-	return (0);
-}
-
-int	debug(t_coder *coder)
-{
-	if (is_simulation_over(coder->sim))
-		return (1);
-	update_time(coder->sim);
-	debug_log(coder, coder->id);
-	usleep(coder->sim->debug_time * 1000);
-	return (0);
-}
-
-int	refactor(t_coder *coder)
-{
-	if (is_simulation_over(coder->sim))
-		return (1);
-	update_time(coder->sim);
-	refactor_log(coder, coder->id);
-	usleep(coder->sim->refactor_time * 1000);
-	return (0);
-}
-
-void	*routine(void *arg)
-{
-	t_coder			*coder;
-
-	coder = (t_coder *)arg;
-	while (!is_simulation_over(coder->sim))
-	{
-		if (compile(coder))
-		{
-			if (!coder->nb_compile)
-			{
-				update_compile_time(coder);
-				return (NULL);
-			}
-			leave_dongle(coder);
-			return (NULL);
-		}
-		pthread_mutex_lock(&coder->mutex);
-		coder->nb_compile += 1;
-		pthread_mutex_unlock(&coder->mutex);
-		has_coder_finished(coder);
-		if (debug(coder))
-			return (NULL);
-		if (refactor(coder))
-			return (NULL);
-		if (has_coder_finished(coder))
-			return (NULL);
-	}
-	return (NULL);
-}
 
 void	*check_burnout(void *arg)
 {
