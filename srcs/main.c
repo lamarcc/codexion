@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/06 00:25:47 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/06 04:56:02 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,25 @@ void	cleanup(t_simulation *sim)
 	pthread_mutex_destroy(&sim->mutex_sim);
 	pthread_mutex_destroy(&sim->mutex_log);
 	free(sim);
+}
+
+int	run(t_simulation *sim)
+{
+	int	i;
+
+	start_time(sim);
+	i = 0;
+	while (i < sim->nb_coders)
+	{
+		if (pthread_create(&sim->coders[i].thread, NULL,
+				&routine, &sim->coders[i]) != 0)
+			cleanup(sim);
+		i++;
+	}
+	usleep(1000);
+	if (pthread_create(&sim->monitor, NULL, &check_burnout, sim) != 0)
+		cleanup(sim);
+	return (1);
 }
 
 int	main(int c, char **v)

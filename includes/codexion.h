@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/06 02:43:04 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/06 04:41:54 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,16 +80,17 @@ void	update_queue(t_coder *coder, t_dongle *dongle, int move);
 void	compile_log(t_coder *coder, int id);
 void	debug_log(t_coder *coder, int id);
 void	refactor_log(t_coder *coder, int id);
-void	burn_log(t_simulation *sim, int id, long time);
+void	burn_log(t_simulation *sim, int id);
 void	cleanup(t_simulation *sim);
 void	leave_dongle(t_coder *coder);
 void	start_time(t_simulation *sim);
-void	update_time(t_simulation *sim);
 void	update_compile_time(t_coder *coder);
 void	update_dongle_time(long start_time, t_dongle *dongle);
 void	*ft_calloc(size_t len, size_t size);
 void	*routine(void *arg);
+void	*check_burnout(void *arg);
 long	get_time(t_simulation *sim);
+int		ft_atoi(char *str);
 int		initialize(t_simulation *sim, char **args);
 int		check_args(t_simulation	*sim, char **args);
 int		run(t_simulation *sim);

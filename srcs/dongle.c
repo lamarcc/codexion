@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 00:00:19 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/05 23:17:19 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/06 05:46:48 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,12 @@ static int	find_first_dongle(t_coder *coder)
 
 static int	cond_loop(t_coder *coder, t_dongle *dongle, long dongle_cooldown)
 {
-	long	time;
-	long	cooldown;
+	// long	time;
+	// long	cooldown;
 
-	time = get_time(coder->sim);
-	cooldown = dongle->last_released + dongle_cooldown;
-	while ((dongle->queue[0] != coder || dongle->taken) && time < cooldown)
+	// time = get_time(coder->sim);
+	// cooldown = dongle->last_released + dongle_cooldown;
+	while (dongle->queue[0] != coder || dongle->taken)
 	{
 		if (dongle->queue[0] != coder)
 			pthread_cond_wait(&dongle->cond, &dongle->mutex);

@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/30 23:03:54 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/05 04:57:29 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/06 04:41:40 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,6 @@ void	start_time(t_simulation *sim)
 	gettimeofday(&t, NULL);
 	pthread_mutex_lock(&sim->mutex_log);
 	sim->start_time = (t.tv_sec * 1000) + (t.tv_usec / 1000);
-	pthread_mutex_unlock(&sim->mutex_log);
-}
-
-void	update_time(t_simulation *sim)
-{
-	long			sec;
-	long			usec;
-	struct timeval	t;
-
-	gettimeofday(&t, NULL);
-	sec = t.tv_sec * 1000;
-	usec = t.tv_usec / 1000;
-	pthread_mutex_lock(&sim->mutex_log);
-	sim->time = (sec + usec) - sim->start_time;
 	pthread_mutex_unlock(&sim->mutex_log);
 }
 

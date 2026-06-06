@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/06 02:38:03 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/06 02:44:09 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/06 05:52:34 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static int	make_compile(t_coder *coder)
 {
 	if (take_dongle(coder))
 		return (1);
-	update_time(coder->sim);
 	update_compile_time(coder);
 	compile_log(coder, coder->id);
 	usleep(coder->sim->compile_time * 1000);
@@ -28,7 +27,6 @@ static int	make_debug(t_coder *coder)
 {
 	if (is_simulation_over(coder->sim))
 		return (1);
-	update_time(coder->sim);
 	debug_log(coder, coder->id);
 	usleep(coder->sim->debug_time * 1000);
 	return (0);
@@ -38,7 +36,6 @@ static int	make_refactor(t_coder *coder)
 {
 	if (is_simulation_over(coder->sim))
 		return (1);
-	update_time(coder->sim);
 	refactor_log(coder, coder->id);
 	usleep(coder->sim->refactor_time * 1000);
 	return (0);
@@ -58,7 +55,6 @@ void	*routine(void *arg)
 		pthread_mutex_lock(&coder->mutex);
 		coder->nb_compile += 1;
 		pthread_mutex_unlock(&coder->mutex);
-		has_coder_finished(coder);
 		if (make_debug(coder))
 			return (NULL);
 		if (make_refactor(coder))
