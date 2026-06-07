@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 03:42:28 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/05 04:14:22 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/07 02:19:38 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ int	initialize(t_simulation *sim, char **args)
 	sim->refactor_time = atoi(args[5]);
 	sim->nb_compile = atoi(args[6]);
 	sim->dongle_cooldown = atoi(args[7]);
-	sim->time = 0;
 	sim->start_time = 0;
 	sim->monitor = 0;
 	if (strcmp("fifo", args[8]) == 0)

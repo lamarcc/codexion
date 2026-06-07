@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/06 02:26:14 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/07 02:20:43 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int	compile(t_coder *coder)
 {
 	if (take_dongle(coder))
 		return (1);
-	update_time(coder->sim);
 	update_compile_time(coder);
 	compile_log(coder, coder->id);
 	usleep(coder->sim->compile_time * 1000);
@@ -28,7 +27,6 @@ int	debug(t_coder *coder)
 {
 	if (is_simulation_over(coder->sim))
 		return (1);
-	update_time(coder->sim);
 	debug_log(coder, coder->id);
 	usleep(coder->sim->debug_time * 1000);
 	return (0);
@@ -38,7 +36,6 @@ int	refactor(t_coder *coder)
 {
 	if (is_simulation_over(coder->sim))
 		return (1);
-	update_time(coder->sim);
 	refactor_log(coder, coder->id);
 	usleep(coder->sim->refactor_time * 1000);
 	return (0);
@@ -80,7 +77,6 @@ void	*check_burnout(void *arg)
 	int				i;
 	int				j;
 	int				has_finished;
-	long			time;
 	long			burnout_check;
 	t_simulation	*sim;
 
@@ -100,16 +96,15 @@ void	*check_burnout(void *arg)
 				return (NULL);
 			}
 			pthread_mutex_unlock(&sim->coders[i].mutex);
-			time = get_time(sim);
 			pthread_mutex_lock(&sim->coders[i].mutex);
-			burnout_check = time - sim->coders[i].previous_compile;
+			burnout_check = get_time(sim) - sim->coders[i].previous_compile;
 			pthread_mutex_unlock(&sim->coders[i].mutex);
 			pthread_mutex_lock(&sim->coders[i].mutex);
 			if (burnout_check > sim->burnout_time && !sim->coders[i].finished)
 			{
 				pthread_mutex_unlock(&sim->coders[i].mutex);
 				j = 0;
-				burn_log(sim, sim->coders[i].id, get_time(sim));
+				burn_log(sim, sim->coders[i].id);
 				pthread_mutex_lock(&sim->mutex_sim);
 				sim->end_simulation = TRUE;
 				pthread_mutex_unlock(&sim->mutex_sim);

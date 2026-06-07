@@ -1,7 +1,7 @@
 NAME	= codexion
 CC		= cc
 RM		= rm -rf
-CFLAGS	= -Wall -Wextra -Werror -pthread -fsanitize=thread
+CFLAGS	= -Wall -Wextra -Werror -pthread -g3
 INCDIR	= includes
 SRCDIR	= srcs
 UTILS	= utils

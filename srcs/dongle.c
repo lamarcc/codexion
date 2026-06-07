@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 00:00:19 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/05 23:17:19 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/07 01:22:59 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,22 +29,12 @@ static int	find_first_dongle(t_coder *coder)
 	return (0);
 }
 
-static int	cond_loop(t_coder *coder, t_dongle *dongle, long dongle_cooldown)
+static int	cond_loop(t_coder *coder, t_dongle *dongle)
 {
-	long	time;
-	long	cooldown;
-
-	time = get_time(coder->sim);
-	cooldown = dongle->last_released + dongle_cooldown;
-	while ((dongle->queue[0] != coder || dongle->taken) && time < cooldown)
+	while ((dongle->queue[0] != coder || dongle->taken))
 	{
 		if (dongle->queue[0] != coder)
 			pthread_cond_wait(&dongle->cond, &dongle->mutex);
-		while (1)
-		{
-			if (get_time(coder->sim) > dongle->last_released + dongle_cooldown)
-				break ;
-		}
 	}
 	if (is_simulation_over(coder->sim))
 		return (1);
@@ -57,14 +47,14 @@ int	take_dongle(t_coder *coder)
 		return (1);
 	update_queue(coder, coder->first, 1);
 	pthread_mutex_lock(&coder->first->mutex);
-	if (cond_loop(coder, coder->first, coder->sim->dongle_cooldown))
+	if (cond_loop(coder, coder->first))
 	{
 		pthread_mutex_unlock(&coder->first->mutex);
 		return (1);
 	}
 	update_queue(coder, coder->second, 1);
 	pthread_mutex_lock(&coder->second->mutex);
-	if (cond_loop(coder, coder->second, coder->sim->dongle_cooldown))
+	if (cond_loop(coder, coder->second))
 	{
 		pthread_mutex_unlock(&coder->first->mutex);
 		pthread_mutex_unlock(&coder->second->mutex);
