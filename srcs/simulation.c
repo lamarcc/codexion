@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/07 02:20:43 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/07 03:18:54 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,16 @@
 
 int	compile(t_coder *coder)
 {
-	if (take_dongle(coder))
-		return (1);
+	if (coder->sim->scheduler)
+	{
+		if (take_dongle(coder))
+			return (1);
+	}
+	else
+	{
+		if (take(coder))
+			return (1);
+	}
 	update_compile_time(coder);
 	compile_log(coder, coder->id);
 	usleep(coder->sim->compile_time * 1000);
@@ -49,15 +57,7 @@ void	*routine(void *arg)
 	while (!is_simulation_over(coder->sim))
 	{
 		if (compile(coder))
-		{
-			if (!coder->nb_compile)
-			{
-				update_compile_time(coder);
-				return (NULL);
-			}
-			leave_dongle(coder);
-			return (NULL);
-		}
+			continue ;
 		pthread_mutex_lock(&coder->mutex);
 		coder->nb_compile += 1;
 		pthread_mutex_unlock(&coder->mutex);

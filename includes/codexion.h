@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/07 02:19:55 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/07 03:04:44 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_coder
 	int				id;
 	int				nb_compile;
 	int				has_dongle;
+	int				priority;
 	int				finished;
 	long			previous_compile;
 	pthread_t		thread;
@@ -87,11 +88,13 @@ void	update_time(t_simulation *sim);
 void	update_compile_time(t_coder *coder);
 void	update_dongle_time(long start_time, t_dongle *dongle);
 void	*ft_calloc(size_t len, size_t size);
+long	time_since(long time_present, long time_past);
 long	get_time(t_simulation *sim);
 int		initialize(t_simulation *sim, char **args);
 int		check_args(t_simulation	*sim, char **args);
 int		run(t_simulation *sim);
 int		take_dongle(t_coder *coder);
+int		take(t_coder *coder);
 int		is_simulation_over(t_simulation *sim);
 int		has_coder_finished(t_coder *coder);
 

@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 03:42:28 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/07 02:19:38 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/07 02:52:46 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int	init_coders(t_simulation *sim)
 		sim->coders[i].id = i + 1;
 		sim->coders[i].has_dongle = FALSE;
 		sim->coders[i].finished = FALSE;
+		sim->coders[i].priority = FALSE;
 		sim->coders[i].nb_compile = 0;
 		sim->coders[i].previous_compile = 0;
 		if (pthread_mutex_init(&sim->coders[i].mutex, NULL) != 0)
