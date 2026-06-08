@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/30 23:03:54 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/07 03:08:42 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/07 07:01:12 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ long	get_time(t_simulation *sim)
 	return (time);
 }
 
-long	time_since(long time_present, long time_past)
+long	time_since(t_simulation *sim, long time)
 {
-	return (time_present - time_past);
+	return (get_time(sim) - time);
 }
 
 void	update_compile_time(t_coder *coder)
@@ -44,15 +44,9 @@ void	update_compile_time(t_coder *coder)
 	pthread_mutex_unlock(&coder->mutex);
 }
 
-void	update_dongle_time(long start_time, t_dongle *dongle)
+void	update_dongle_time(t_simulation *sim, t_dongle *dongle)
 {
-	long			time;
-	struct timeval	t;
-
 	pthread_mutex_lock(&dongle->mutex);
-	gettimeofday(&t, NULL);
-	time = (t.tv_sec * 1000) + (t.tv_usec / 1000);
-	dongle->last_released = time - start_time;
-	// pthread_cond_broadcast(&dongle->cond);
+	dongle->last_released = get_time(sim);
 	pthread_mutex_unlock(&dongle->mutex);
 }

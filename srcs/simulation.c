@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/07 03:18:54 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/08 04:09:12 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,8 @@
 
 int	compile(t_coder *coder)
 {
-	if (coder->sim->scheduler)
-	{
-		if (take_dongle(coder))
-			return (1);
-	}
-	else
-	{
-		if (take(coder))
-			return (1);
-	}
+	if (take_dongle(coder))
+		return (1);
 	update_compile_time(coder);
 	compile_log(coder, coder->id);
 	usleep(coder->sim->compile_time * 1000);
@@ -56,6 +48,8 @@ void	*routine(void *arg)
 	coder = (t_coder *)arg;
 	while (!is_simulation_over(coder->sim))
 	{
+		if (is_simulation_over(coder->sim))
+			return (NULL);
 		if (compile(coder))
 			continue ;
 		pthread_mutex_lock(&coder->mutex);
@@ -70,6 +64,25 @@ void	*routine(void *arg)
 			return (NULL);
 	}
 	return (NULL);
+}
+
+static void	check_priority(t_coder *coder, t_dongle *left, t_dongle *right)
+{
+	pthread_mutex_lock(&coder->mutex);
+	pthread_mutex_lock(&left->left->mutex);
+	pthread_mutex_lock(&right->right->mutex);
+	if (coder->previous_compile < left->left->previous_compile && coder->previous_compile < right->right->previous_compile)
+	{
+		pthread_mutex_lock(&left->mutex);
+		pthread_mutex_lock(&right->mutex);
+		left->priority = coder;
+		right->priority = coder;
+		pthread_mutex_unlock(&left->mutex);
+		pthread_mutex_unlock(&right->mutex);
+	}
+	pthread_mutex_unlock(&coder->mutex);
+	pthread_mutex_unlock(&left->left->mutex);
+	pthread_mutex_unlock(&right->right->mutex);
 }
 
 void	*check_burnout(void *arg)
@@ -89,25 +102,27 @@ void	*check_burnout(void *arg)
 		{
 			pthread_mutex_lock(&sim->coders[i].mutex);
 			if (sim->coders[i].finished)
-				has_finished += 1;
-			if (has_finished == sim->nb_coders)
 			{
-				pthread_mutex_unlock(&sim->coders[i].mutex);
-				return (NULL);
+				if (has_finished == sim->nb_coders)
+				{
+					pthread_mutex_unlock(&sim->coders[i].mutex);
+					return (NULL);
+				}
+				has_finished += 1;
 			}
 			pthread_mutex_unlock(&sim->coders[i].mutex);
+			if (!sim->scheduler)
+				check_priority(&sim->coders[i], sim->coders[i].left_d, sim->coders[i].right_d);
 			pthread_mutex_lock(&sim->coders[i].mutex);
 			burnout_check = get_time(sim) - sim->coders[i].previous_compile;
-			pthread_mutex_unlock(&sim->coders[i].mutex);
-			pthread_mutex_lock(&sim->coders[i].mutex);
 			if (burnout_check > sim->burnout_time && !sim->coders[i].finished)
 			{
-				pthread_mutex_unlock(&sim->coders[i].mutex);
-				j = 0;
-				burn_log(sim, sim->coders[i].id);
 				pthread_mutex_lock(&sim->mutex_sim);
 				sim->end_simulation = TRUE;
 				pthread_mutex_unlock(&sim->mutex_sim);
+				pthread_mutex_unlock(&sim->coders[i].mutex);
+				burn_log(sim, sim->coders[i].id);
+				j = 0;
 				while (j < sim->nb_coders)
 				{
 					pthread_mutex_lock(&sim->dongles[j].mutex);
@@ -129,6 +144,8 @@ int	run(t_simulation *sim)
 
 	start_time(sim);
 	i = 0;
+	if (pthread_create(&sim->monitor, NULL, &check_burnout, sim) != 0)
+		cleanup(sim);
 	while (i < sim->nb_coders)
 	{
 		if (pthread_create(&sim->coders[i].thread, NULL, &routine, &sim->coders[i]) != 0)
@@ -136,8 +153,5 @@ int	run(t_simulation *sim)
 		usleep(10);
 		i++;
 	}
-	usleep(1000);
-	if (pthread_create(&sim->monitor, NULL, &check_burnout, sim) != 0)
-		cleanup(sim);
 	return (1);
 }

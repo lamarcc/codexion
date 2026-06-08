@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 03:42:28 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/07 02:52:46 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/08 03:46:14 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	init_dongles(t_simulation *sim)
 	{
 		sim->dongles[i].id = i + 1;
 		sim->dongles[i].taken = FALSE;
-		sim->dongles[i].last_released = -1;
+		sim->dongles[i].last_released = -sim->dongle_cooldown;
 		if (pthread_mutex_init(&sim->dongles[i].mutex, NULL) != 0)
 			return (1);
 		if (pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
@@ -30,6 +30,7 @@ int	init_dongles(t_simulation *sim)
 		sim->dongles[i].right = NULL;
 		sim->dongles[i].queue[0] = NULL;
 		sim->dongles[i].queue[1] = NULL;
+		sim->dongles[i].priority = NULL;
 		i++;
 	}
 	return (0);
@@ -45,9 +46,11 @@ int	init_coders(t_simulation *sim)
 		sim->coders[i].id = i + 1;
 		sim->coders[i].has_dongle = FALSE;
 		sim->coders[i].finished = FALSE;
-		sim->coders[i].priority = FALSE;
 		sim->coders[i].nb_compile = 0;
-		sim->coders[i].previous_compile = 0;
+		if (i % 2 == 1)
+			sim->coders[i].previous_compile = 0;
+		else
+			sim->coders[i].previous_compile = -1;
 		if (pthread_mutex_init(&sim->coders[i].mutex, NULL) != 0)
 			return (1);
 		sim->coders[i].left_d = &sim->dongles[i];
@@ -91,6 +94,12 @@ int	initialize(t_simulation *sim, char **args)
 	{
 		sim->dongles[i].right = &sim->coders[i];
 		sim->dongles[i].left = &sim->coders[(i + 1) % sim->nb_coders];
+		if (i % 2 == 0)
+			sim->dongles[i].priority = sim->dongles[i].right;
+		else
+			sim->dongles[i].priority = sim->dongles[i].left;
+		// printf("dongle n%d  :%d\n", sim->dongles[i].id, sim->dongles[i].priority->id);
+		// printf("dongle n%d  left:%d, right:%d\n", sim->dongles[i].id, sim->dongles[i].left->id, sim->dongles[i].right->id);
 		i++;
 	}
 	return (0);
