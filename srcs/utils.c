@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/04 22:04:12 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/05 05:14:15 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/09 05:42:28 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 int	is_simulation_over(t_simulation *sim)
 {
-	pthread_mutex_lock(&sim->mutex_sim);
+	pthread_mutex_lock(&sim->mutex);
 	if (sim->end_simulation)
 	{
-		pthread_mutex_unlock(&sim->mutex_sim);
+		pthread_mutex_unlock(&sim->mutex);
 		return (1);
 	}
-	pthread_mutex_unlock(&sim->mutex_sim);
+	pthread_mutex_unlock(&sim->mutex);
 	return (0);
 }
 

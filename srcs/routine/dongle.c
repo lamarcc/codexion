@@ -6,20 +6,16 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 00:00:19 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/08 03:25:37 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/09 05:43:49 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/codexion.h"
+#include "../../includes/codexion.h"
 
-static int	d_availabe(t_simulation *sim, t_dongle *dongle1, t_dongle *dongle2, long c)
+static int	d_cooldown(t_simulation *sim, t_dongle *d1, t_dongle *d2, long c)
 {
-	return (time_since(sim, dongle1->last_released + c) >= 0 && time_since(sim, dongle2->last_released + c) >= 0);
-}
-
-static int	has_priority(t_coder *coder, t_dongle *dongle1, t_dongle *dongle2)
-{
-	return (dongle1->priority == coder && dongle2->priority == coder);
+	return (time_since(sim, d1->last_released + c) >= 0
+		&& time_since(sim, d2->last_released + c) >= 0);
 }
 
 static int	find_first_dongle(t_coder *coder)
@@ -45,11 +41,11 @@ int	take_dongle(t_coder *coder)
 		return (1);
 	pthread_mutex_lock(&coder->first->mutex);
 	pthread_mutex_lock(&coder->second->mutex);
-	update_queue(coder, coder->first, 1);
-	update_queue(coder, coder->second, 1);
+	enter_queue(coder, coder->first);
+	enter_queue(coder, coder->second);
 	if (coder->sim->scheduler)
 	{
-		if ((!coder->first->taken && !coder->second->taken) && d_availabe(coder->sim, coder->first, coder->second, coder->sim->dongle_cooldown))
+		if ((!coder->first->taken && !coder->second->taken) && d_cooldown(coder->sim, coder->first, coder->second, coder->sim->dongle_cooldown))
 		{
 			coder->first->taken = true;
 			coder->second->taken = true;
@@ -60,10 +56,8 @@ int	take_dongle(t_coder *coder)
 	}
 	else
 	{
-		if ((!coder->first->taken && !coder->second->taken) && d_availabe(coder->sim, coder->first, coder->second, coder->sim->dongle_cooldown) && has_priority(coder, coder->first, coder->second))
+		if ((!coder->first->taken && !coder->second->taken) && d_cooldown(coder->sim, coder->first, coder->second, coder->sim->dongle_cooldown) && coder->first->queue[0] == coder && coder->second->queue[0] == coder)
 		{
-			printf("%d\n", coder->nb_compile);
-			printf("%d\n", coder->finished);
 			coder->first->taken = true;
 			coder->second->taken = true;
 			pthread_mutex_unlock(&coder->first->mutex);
@@ -82,6 +76,8 @@ void	leave_dongle(t_coder *coder)
 	pthread_mutex_lock(&coder->second->mutex);
 	coder->first->taken = FALSE;
 	coder->second->taken = FALSE;
+	leave_queue(coder->first);
+	leave_queue(coder->second);
 	coder->first->last_released = get_time(coder->sim);
 	coder->second->last_released = get_time(coder->sim);
 	pthread_mutex_unlock(&coder->first->mutex);

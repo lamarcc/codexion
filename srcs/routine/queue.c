@@ -6,31 +6,22 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/04 23:24:18 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/08 01:45:53 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/09 05:43:42 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/codexion.h"
+#include "../../includes/codexion.h"
 
-void	entry(t_coder *coder, t_dongle *dongle)
+void	enter_queue(t_coder *coder, t_dongle *dongle)
 {
 	if (dongle->queue[0] == NULL)
 		dongle->queue[0] = coder;
-	else
+	if (dongle->queue[1] != NULL && dongle->queue[1] != coder)
 		dongle->queue[1] = coder;
 }
 
-void	leave(t_dongle *dongle)
+void	leave_queue(t_dongle *dongle)
 {
-	pthread_mutex_lock(&dongle->mutex);
-	dongle->taken = FALSE;
-	pthread_mutex_unlock(&dongle->mutex);
-}
-
-void	update_queue(t_coder *coder, t_dongle *dongle, int move)
-{
-	if (move)
-		entry(coder, dongle);
-	else
-		leave(dongle);
+	dongle->queue[0] = dongle->queue[1];
+	dongle->queue[1] = NULL;
 }

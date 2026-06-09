@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/06 00:25:47 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/09 05:42:01 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	cleanup(t_simulation *sim)
 	free(sim->dongles);
 	free(sim->coders);
 	pthread_mutex_destroy(&sim->mutex_sim);
-	pthread_mutex_destroy(&sim->mutex_log);
+	pthread_mutex_destroy(&sim->mutex);
 	free(sim);
 }
 
