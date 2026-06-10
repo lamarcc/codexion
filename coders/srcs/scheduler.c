@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 03:38:31 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 04:07:01 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 01:37:15 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ static int	fifo_loop(t_coder *coder, t_dongle *dongle)
 
 static int	edf_loop(t_coder *coder, t_dongle *dongle)
 {
+	enter_queue(coder, dongle);
 	while ((dongle->queue[0] != coder || dongle->taken
 			|| !d_cooldown(coder->sim, dongle)))
 	{
