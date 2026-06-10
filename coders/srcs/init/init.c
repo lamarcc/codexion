@@ -6,32 +6,11 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 03:42:28 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 00:06:24 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 00:48:02 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/codexion.h"
-
-static int	init_dongles(t_simulation *sim)
-{
-	int	i;
-
-	i = 0;
-	while (i < sim->nb_coders)
-	{
-		sim->dongles[i].id = i + 1;
-		sim->dongles[i].taken = FALSE;
-		sim->dongles[i].last_released = -sim->dongle_cooldown;
-		sim->dongles[i].queue[0] = NULL;
-		sim->dongles[i].queue[1] = NULL;
-		if (pthread_mutex_init(&sim->dongles[i].mutex, NULL) != 0)
-			return (1);
-		if (pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
 
 static int	init_coders(t_simulation *sim)
 {
@@ -57,6 +36,29 @@ static int	init_coders(t_simulation *sim)
 	return (0);
 }
 
+static int	init_dongles(t_simulation *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->nb_coders)
+	{
+		sim->dongles[i].id = i + 1;
+		sim->dongles[i].taken = FALSE;
+		sim->dongles[i].last_released = -sim->dongle_cooldown;
+		sim->dongles[i].queue[0] = NULL;
+		sim->dongles[i].queue[1] = NULL;
+		if (pthread_mutex_init(&sim->dongles[i].mutex, NULL) != 0)
+			return (1);
+		if (pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
+			return (1);
+		i++;
+	}
+	if (init_coders(sim))
+		return (1);
+	return (0);
+}
+
 int	initialize(t_simulation *sim, char **args)
 {
 	sim->nb_coders = ft_atoi(args[1]);
@@ -66,6 +68,7 @@ int	initialize(t_simulation *sim, char **args)
 	sim->refactor_time = ft_atoi(args[5]);
 	sim->nb_compile = ft_atoi(args[6]);
 	sim->dongle_cooldown = ft_atoi(args[7]);
+	sim->end_simulation = FALSE;
 	sim->start_time = 0;
 	sim->monitor = 0;
 	if ((strcmp("fifo", args[8]) == 0))
@@ -75,10 +78,12 @@ int	initialize(t_simulation *sim, char **args)
 	if (pthread_mutex_init(&sim->mutex, NULL) != 0)
 		return (1);
 	sim->coders = calloc(sim->nb_coders, sizeof(t_coder));
-	sim->dongles = calloc(sim->nb_coders, sizeof(t_dongle));
-	if (init_dongles(sim))
+	if (!sim->coders)
 		return (1);
-	if (init_coders(sim))
+	sim->dongles = calloc(sim->nb_coders, sizeof(t_dongle));
+	if (!sim->dongles)
+		return (1);
+	if (init_dongles(sim))
 		return (1);
 	return (0);
 }

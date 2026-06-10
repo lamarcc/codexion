@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 01:19:57 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 00:03:32 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 00:34:01 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,17 +86,17 @@ int	check_args(t_simulation *sim, char **args)
 {
 	if (ft_atoi(args[1]) < 1 || ft_atoi(args[1]) > 5000)
 		sim->errors = append(sim->errors, "Invalid number of coders value\n");
-	if (ft_atoi(args[2]) < 1 || ft_atoi(args[2]) > 1000)
+	if (ft_atoi(args[2]) < 1)
 		sim->errors = append(sim->errors, "Invalid time to burnout value\n");
-	if (ft_atoi(args[3]) < 1 || ft_atoi(args[3]) > 1000)
+	if (ft_atoi(args[3]) < 1)
 		sim->errors = append(sim->errors, "Invalid time to compile value\n");
-	if (ft_atoi(args[4]) < 1 || ft_atoi(args[4]) > 1000)
+	if (ft_atoi(args[4]) < 1)
 		sim->errors = append(sim->errors, "Invalid time to debug value\n");
-	if (ft_atoi(args[5]) < 1 || ft_atoi(args[5]) > 1000)
+	if (ft_atoi(args[5]) < 1)
 		sim->errors = append(sim->errors, "Invalid time to refactor value\n");
-	if (ft_atoi(args[6]) < 1 || ft_atoi(args[6]) > 1000)
+	if (ft_atoi(args[6]) < 1)
 		sim->errors = append(sim->errors, "Invalid number of compile value\n");
-	if (ft_atoi(args[7]) < 0 || ft_atoi(args[7]) > 1000)
+	if (ft_atoi(args[7]) < 0)
 		sim->errors = append(sim->errors, "Invalid dongle cooldown value\n");
 	if (check_scheduler(args[8]))
 		sim->errors = append(sim->errors, "Unexpected scheduler\n");

@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 02:51:40 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 22:16:23 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 00:54:22 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void	*monitor_routine(void *arg)
 		}
 		if (has_finished == sim->nb_coders)
 		{
+			usleep(1000);
 			set_end(sim);
 			return (NULL);
 		}

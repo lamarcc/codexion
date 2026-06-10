@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 02:43:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 23:53:42 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 00:35:57 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	*ft_calloc(size_t len, size_t size)
 	unsigned char	*ptr;
 
 	if (len == 0 || size == 0)
-		return (malloc(0));
+		return (0);
 	if ((len / SIZE_MAX) > size)
 		return (NULL);
 	ptr = malloc(len * size);

@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 00:08:35 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 00:44:45 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <string.h>
 # include <unistd.h>
 # include <pthread.h>
-// # include <stdbool.h>
 # include <sys/time.h>
 
 # define TRUE 1

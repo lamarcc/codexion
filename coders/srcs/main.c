@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 23:52:04 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 00:36:36 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ int	main(int c, char **v)
 	t_simulation	*sim;
 
 	sim = ft_calloc(1, sizeof(t_simulation));
+	if (!sim)
+		return (error(sim));
 	if (c != 9)
 		return (error(sim));
 	if (check_args(sim, v))
