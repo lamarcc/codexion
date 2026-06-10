@@ -5,34 +5,33 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/19 02:43:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/05/28 04:28:04 by celamarc         ###   ########lyon.fr   */
+/*   Created: 2026/06/04 22:04:12 by celamarc          #+#    #+#             */
+/*   Updated: 2026/06/10 01:53:05 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/codexion.h"
-#include <stdint.h>
 
-void	ft_bzero(void *s, size_t n)
+int	is_simulation_over(t_simulation *sim)
 {
-	size_t	i;
-
-	i = 0;
-	while (i++ < n)
-		*(unsigned char *)(s++) = '\0';
+	pthread_mutex_lock(&sim->mutex);
+	if (sim->end_simulation)
+	{
+		pthread_mutex_unlock(&sim->mutex);
+		return (1);
+	}
+	pthread_mutex_unlock(&sim->mutex);
+	return (0);
 }
 
-void	*ft_calloc(size_t len, size_t size)
+int	has_coder_finished(t_coder *coder)
 {
-	unsigned char	*ptr;
-
-	if (len == 0 || size == 0)
-		return (malloc(0));
-	if ((len / SIZE_MAX) > size)
-		return (NULL);
-	ptr = malloc(len * size);
-	if (!ptr)
-		return (NULL);
-	ft_bzero(ptr, (len * size));
-	return (ptr);
+	pthread_mutex_lock(&coder->mutex);
+	if (coder->nb_compile == coder->sim->nb_compile)
+	{
+		pthread_mutex_unlock(&coder->mutex);
+		return (1);
+	}
+	pthread_mutex_unlock(&coder->mutex);
+	return (0);
 }

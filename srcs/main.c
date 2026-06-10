@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/06 00:25:47 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 02:53:28 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 int	error(t_simulation *sim)
 {
-	printf("\n%s\n", sim->errors);
+	if (sim->errors)
+		printf("\n%s\n", sim->errors);
 	printf("Follow this exemple: %s\n", ARG_EXEMPLE);
 	free(sim->errors);
 	free(sim);
@@ -45,9 +46,27 @@ void	cleanup(t_simulation *sim)
 	}
 	free(sim->dongles);
 	free(sim->coders);
-	pthread_mutex_destroy(&sim->mutex_sim);
-	pthread_mutex_destroy(&sim->mutex_log);
+	pthread_mutex_destroy(&sim->mutex);
 	free(sim);
+}
+
+int	start_simulation(t_simulation *sim)
+{
+	int	i;
+
+	start_time(sim);
+	i = 0;
+	while (i < sim->nb_coders)
+	{
+		if (pthread_create(&sim->coders[i].thread, NULL,
+				&coder_routine, &sim->coders[i]) != 0)
+			cleanup(sim);
+		usleep(10);
+		i++;
+	}
+	if (pthread_create(&sim->monitor, NULL, &monitor_routine, sim) != 0)
+		cleanup(sim);
+	return (1);
 }
 
 int	main(int c, char **v)
@@ -64,7 +83,7 @@ int	main(int c, char **v)
 		cleanup(sim);
 		return (1);
 	}
-	run(sim);
+	start_simulation(sim);
 	cleanup(sim);
 	return (0);
 }

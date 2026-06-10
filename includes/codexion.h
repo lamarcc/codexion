@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/07 02:19:55 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 02:56:56 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,7 @@ typedef struct s_simulation
 	long				start_time;
 	char				*errors;
 	pthread_t			monitor;
-	pthread_mutex_t		mutex_sim;
-	pthread_mutex_t		mutex_log;
+	pthread_mutex_t		mutex;
 	struct s_coder		*coders;
 	struct s_dongle		*dongles;
 }		t_simulation;
@@ -51,8 +50,6 @@ typedef struct s_coder
 {
 	int				id;
 	int				nb_compile;
-	int				has_dongle;
-	int				finished;
 	long			previous_compile;
 	pthread_t		thread;
 	pthread_mutex_t	mutex;
@@ -68,31 +65,34 @@ typedef struct s_dongle
 	int				id;
 	int				taken;
 	long			last_released;
-	pthread_mutex_t	mutex;
 	pthread_cond_t	cond;
-	struct s_coder	*left;
-	struct s_coder	*right;
+	pthread_mutex_t	mutex;
 	struct s_coder	*queue[2];
 }		t_dongle;
 
-void	update_queue(t_coder *coder, t_dongle *dongle, int move);
 void	compile_log(t_coder *coder, int id);
 void	debug_log(t_coder *coder, int id);
 void	refactor_log(t_coder *coder, int id);
 void	burn_log(t_simulation *sim, int id);
 void	cleanup(t_simulation *sim);
+void	enter_queue(t_coder *coder, t_dongle *dongle);
+void	leave_queue(t_dongle *dongle);
 void	leave_dongle(t_coder *coder);
 void	start_time(t_simulation *sim);
 void	update_time(t_simulation *sim);
 void	update_compile_time(t_coder *coder);
-void	update_dongle_time(long start_time, t_dongle *dongle);
+void	*coder_routine(void *arg);
+void	*monitor_routine(void *arg);
 void	*ft_calloc(size_t len, size_t size);
+long	time_since(t_simulation *sim, long time);
 long	get_time(t_simulation *sim);
+int		ft_atoi(char *str);
 int		initialize(t_simulation *sim, char **args);
 int		check_args(t_simulation	*sim, char **args);
-int		run(t_simulation *sim);
+int		ft_atoi(char *str);
 int		take_dongle(t_coder *coder);
 int		is_simulation_over(t_simulation *sim);
 int		has_coder_finished(t_coder *coder);
+int		verif_queue(t_coder *coder);
 
 #endif

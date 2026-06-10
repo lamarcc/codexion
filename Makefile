@@ -11,7 +11,8 @@ OBJDIR	= .obj
 SRCS	=	$(SRCDIR)/main.c \
 			$(SRCDIR)/parsing.c \
 			$(SRCDIR)/init.c \
-			$(SRCDIR)/simulation.c \
+			$(SRCDIR)/coder.c \
+			$(SRCDIR)/monitor.c \
 			$(SRCDIR)/dongle.c \
 			$(SRCDIR)/time.c \
 			$(SRCDIR)/queue.c \

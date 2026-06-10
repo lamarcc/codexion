@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/30 23:03:54 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/07 02:19:51 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 02:54:08 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ void	start_time(t_simulation *sim)
 	struct timeval	t;
 
 	gettimeofday(&t, NULL);
-	pthread_mutex_lock(&sim->mutex_log);
+	pthread_mutex_lock(&sim->mutex);
 	sim->start_time = (t.tv_sec * 1000) + (t.tv_usec / 1000);
-	pthread_mutex_unlock(&sim->mutex_log);
+	pthread_mutex_unlock(&sim->mutex);
 }
 
 long	get_time(t_simulation *sim)
@@ -35,19 +35,7 @@ long	get_time(t_simulation *sim)
 void	update_compile_time(t_coder *coder)
 {
 	pthread_mutex_lock(&coder->mutex);
+	coder->nb_compile++;
 	coder->previous_compile = get_time(coder->sim);
 	pthread_mutex_unlock(&coder->mutex);
-}
-
-void	update_dongle_time(long start_time, t_dongle *dongle)
-{
-	long			time;
-	struct timeval	t;
-
-	pthread_mutex_lock(&dongle->mutex);
-	gettimeofday(&t, NULL);
-	time = (t.tv_sec * 1000) + (t.tv_usec / 1000);
-	dongle->last_released = time - start_time;
-	pthread_cond_broadcast(&dongle->cond);
-	pthread_mutex_unlock(&dongle->mutex);
 }
