@@ -6,11 +6,11 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/04 23:24:18 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 01:35:25 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 03:34:00 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/codexion.h"
+#include "../../includes/codexion.h"
 
 void	enter_queue(t_coder *coder, t_dongle *dongle)
 {

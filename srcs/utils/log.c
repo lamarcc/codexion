@@ -6,11 +6,24 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/04 02:29:34 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 01:54:43 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 05:45:25 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/codexion.h"
+#include "../../includes/codexion.h"
+
+// UNIFIER LES PRINT DANS UNE FONCTIN ET ENVOYER LA STR DIRECTEMENT
+// ATOI DOIT RENVOOYER 0 SI LETTRE
+// SCHEDULER EN MAJ DOIT ETRE ACCEPTER
+
+void	print_coder(t_coder *coder, int id, char *actions)
+{
+	pthread_mutex_lock(&coder->sim->mutex);
+	if (!coder->sim->end_simulation)
+		printf("%ld %d %s\n", get_time(coder->sim), id, actions);
+	pthread_mutex_unlock(&coder->sim->mutex);
+
+}
 
 void	compile_log(t_coder *coder, int id)
 {

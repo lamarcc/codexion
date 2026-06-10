@@ -6,11 +6,25 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 02:51:40 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 02:52:23 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 04:59:25 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/codexion.h"
+
+static void	broadcast_cond(t_simulation *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->nb_coders)
+	{
+		pthread_mutex_lock(&sim->dongles[i].mutex);
+		pthread_cond_broadcast(&sim->dongles[i].cond);
+		pthread_mutex_unlock(&sim->dongles[i].mutex);
+		i++;
+	}
+}
 
 static void	set_end(t_simulation *sim)
 {
@@ -30,6 +44,7 @@ static int	burn_check(t_coder *coder, long burnout_time)
 		pthread_mutex_unlock(&coder->mutex);
 		set_end(coder->sim);
 		burn_log(coder->sim, coder->id);
+		broadcast_cond(coder->sim);
 		return (1);
 	}
 	pthread_mutex_unlock(&coder->mutex);

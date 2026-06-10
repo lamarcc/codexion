@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 02:56:56 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 04:34:44 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <pthread.h>
 # include <stdbool.h>
 # include <sys/time.h>
+# include <unistd.h>
 
 # define TRUE 1
 # define FALSE 0
@@ -86,13 +87,14 @@ void	*monitor_routine(void *arg);
 void	*ft_calloc(size_t len, size_t size);
 long	time_since(t_simulation *sim, long time);
 long	get_time(t_simulation *sim);
+int		d_cooldown(t_simulation *sim, t_dongle *dongle);
 int		ft_atoi(char *str);
 int		initialize(t_simulation *sim, char **args);
 int		check_args(t_simulation	*sim, char **args);
 int		ft_atoi(char *str);
 int		take_dongle(t_coder *coder);
+int		scheduler(t_coder *coder, t_dongle *dongle);
 int		is_simulation_over(t_simulation *sim);
 int		has_coder_finished(t_coder *coder);
-int		verif_queue(t_coder *coder);
 
 #endif
