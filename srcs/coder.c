@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 05:24:16 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 22:22:06 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,9 @@ static int	make_compile(t_coder *coder)
 	if (take_dongle(coder))
 		return (1);
 	update_compile_time(coder);
-	compile_log(coder, coder->id);
+	print_log(coder, "has taken a dongle");
+	print_log(coder, "has taken a dongle");
+	print_log(coder, "is compiling");
 	if (smart_sleep(coder->sim->compile_time, coder->sim))
 		return (1);
 	leave_dongle(coder);
@@ -48,7 +50,7 @@ static int	make_debug(t_coder *coder)
 {
 	if (is_simulation_over(coder->sim))
 		return (1);
-	debug_log(coder, coder->id);
+	print_log(coder, "is debugging");
 	if (smart_sleep(coder->sim->debug_time, coder->sim))
 		return (1);
 	return (0);
@@ -58,7 +60,7 @@ static int	make_refactor(t_coder *coder)
 {
 	if (is_simulation_over(coder->sim))
 		return (1);
-	refactor_log(coder, coder->id);
+	print_log(coder, "is refactoring");
 	if (smart_sleep(coder->sim->refactor_time, coder->sim))
 		return (1);
 	return (0);
@@ -76,7 +78,7 @@ void	*coder_routine(void *arg)
 		if (is_simulation_over(coder->sim))
 			return (NULL);
 		if (make_compile(coder))
-			return (NULL) ;
+			return (NULL);
 		if (make_debug(coder))
 			return (NULL);
 		if (make_refactor(coder))

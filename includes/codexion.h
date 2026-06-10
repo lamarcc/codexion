@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 04:34:44 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 22:26:37 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,8 @@
 # include <string.h>
 # include <unistd.h>
 # include <pthread.h>
-# include <stdbool.h>
+// # include <stdbool.h>
 # include <sys/time.h>
-# include <unistd.h>
 
 # define TRUE 1
 # define FALSE 0
@@ -71,10 +70,7 @@ typedef struct s_dongle
 	struct s_coder	*queue[2];
 }		t_dongle;
 
-void	compile_log(t_coder *coder, int id);
-void	debug_log(t_coder *coder, int id);
-void	refactor_log(t_coder *coder, int id);
-void	burn_log(t_simulation *sim, int id);
+void	print_log(t_coder *coder, char *str);
 void	cleanup(t_simulation *sim);
 void	enter_queue(t_coder *coder, t_dongle *dongle);
 void	leave_queue(t_dongle *dongle);

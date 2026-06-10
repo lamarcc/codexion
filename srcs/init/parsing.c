@@ -6,13 +6,13 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 01:19:57 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 03:34:26 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 22:38:14 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/codexion.h"
 
-size_t	ft_strlen(char *s)
+static size_t	ft_strlen(char *s)
 {
 	int	i;
 
@@ -28,7 +28,7 @@ size_t	ft_strlen(char *s)
 	return (i);
 }
 
-void	*ft_memcpy(void *dest, const void *src, size_t n)
+static void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
 	size_t	i;
 
@@ -44,7 +44,7 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-char	*append(char *s1, char *s2)
+static char	*append(char *s1, char *s2)
 {
 	size_t	len;
 	size_t	s1_len;

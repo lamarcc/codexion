@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 04:51:02 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 22:57:38 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	error(t_simulation *sim)
 	return (1);
 }
 
-void	cleanup(t_simulation *sim)
+void	join_thread(t_simulation *sim)
 {
 	int	i;
 
@@ -33,6 +33,11 @@ void	cleanup(t_simulation *sim)
 		i++;
 	}
 	pthread_join(sim->monitor, NULL);
+}
+void	cleanup(t_simulation *sim)
+{
+	int	i;
+
 	i = 0;
 	while (i < sim->nb_coders)
 	{
@@ -57,13 +62,12 @@ int	start_simulation(t_simulation *sim)
 	{
 		if (pthread_create(&sim->coders[i].thread, NULL,
 				&coder_routine, &sim->coders[i]) != 0)
-			cleanup(sim);
-		usleep(10);
+			return (1);
 		i++;
 	}
 	if (pthread_create(&sim->monitor, NULL, &monitor_routine, sim) != 0)
-		cleanup(sim);
-	return (1);
+		return (1);
+	return (0);
 }
 
 int	main(int c, char **v)

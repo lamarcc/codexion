@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 02:51:40 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 04:59:25 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 22:16:23 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static int	burn_check(t_coder *coder, long burnout_time)
 	{
 		pthread_mutex_unlock(&coder->mutex);
 		set_end(coder->sim);
-		burn_log(coder->sim, coder->id);
+		printf("%ld %d has burned out\n", get_time(coder->sim), coder->id);
 		broadcast_cond(coder->sim);
 		return (1);
 	}
