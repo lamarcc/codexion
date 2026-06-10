@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 01:19:57 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 22:38:14 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 00:03:32 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,23 +66,39 @@ static char	*append(char *s1, char *s2)
 	return (dest);
 }
 
+static int	check_scheduler(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] >= 'a' && str[i] <= 'z')
+			str[i] -= 32;
+		i++;
+	}
+	if (strcmp("FIFO", str) == 0 || strcmp("EDF", str) == 0)
+		return (0);
+	return (1);
+}
+
 int	check_args(t_simulation *sim, char **args)
 {
 	if (ft_atoi(args[1]) < 1 || ft_atoi(args[1]) > 5000)
 		sim->errors = append(sim->errors, "Invalid number of coders value\n");
-	if (ft_atoi(args[2]) < 1)
+	if (ft_atoi(args[2]) < 1 || ft_atoi(args[2]) > 1000)
 		sim->errors = append(sim->errors, "Invalid time to burnout value\n");
-	if (ft_atoi(args[3]) < 1)
+	if (ft_atoi(args[3]) < 1 || ft_atoi(args[3]) > 1000)
 		sim->errors = append(sim->errors, "Invalid time to compile value\n");
-	if (ft_atoi(args[4]) < 1)
+	if (ft_atoi(args[4]) < 1 || ft_atoi(args[4]) > 1000)
 		sim->errors = append(sim->errors, "Invalid time to debug value\n");
-	if (ft_atoi(args[5]) < 1)
+	if (ft_atoi(args[5]) < 1 || ft_atoi(args[5]) > 1000)
 		sim->errors = append(sim->errors, "Invalid time to refactor value\n");
-	if (ft_atoi(args[6]) < 1)
+	if (ft_atoi(args[6]) < 1 || ft_atoi(args[6]) > 1000)
 		sim->errors = append(sim->errors, "Invalid number of compile value\n");
-	if (ft_atoi(args[7]) < 0)
+	if (ft_atoi(args[7]) < 0 || ft_atoi(args[7]) > 1000)
 		sim->errors = append(sim->errors, "Invalid dongle cooldown value\n");
-	if ((strcmp("fifo", args[8]) != 0) && (strcmp("edf", args[8]) != 0))
+	if (check_scheduler(args[8]))
 		sim->errors = append(sim->errors, "Unexpected scheduler\n");
 	if (ft_strlen(sim->errors))
 		return (1);

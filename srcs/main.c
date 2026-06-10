@@ -6,13 +6,13 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 22:57:38 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 23:52:04 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/codexion.h"
 
-int	error(t_simulation *sim)
+static int	error(t_simulation *sim)
 {
 	if (sim->errors)
 		printf("\n%s\n", sim->errors);
@@ -22,7 +22,7 @@ int	error(t_simulation *sim)
 	return (1);
 }
 
-void	join_thread(t_simulation *sim)
+static void	join_thread(t_simulation *sim)
 {
 	int	i;
 
@@ -34,7 +34,8 @@ void	join_thread(t_simulation *sim)
 	}
 	pthread_join(sim->monitor, NULL);
 }
-void	cleanup(t_simulation *sim)
+
+static void	cleanup(t_simulation *sim)
 {
 	int	i;
 
@@ -52,7 +53,7 @@ void	cleanup(t_simulation *sim)
 	free(sim);
 }
 
-int	start_simulation(t_simulation *sim)
+static int	start_simulation(t_simulation *sim)
 {
 	int	i;
 
@@ -63,6 +64,7 @@ int	start_simulation(t_simulation *sim)
 		if (pthread_create(&sim->coders[i].thread, NULL,
 				&coder_routine, &sim->coders[i]) != 0)
 			return (1);
+		usleep(100);
 		i++;
 	}
 	if (pthread_create(&sim->monitor, NULL, &monitor_routine, sim) != 0)
@@ -85,6 +87,7 @@ int	main(int c, char **v)
 		return (1);
 	}
 	start_simulation(sim);
+	join_thread(sim);
 	cleanup(sim);
 	return (0);
 }

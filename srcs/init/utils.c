@@ -6,53 +6,46 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 02:43:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 22:23:09 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/10 23:53:42 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/codexion.h"
 #include <stdint.h>
 
-static int	check_overflow(int nb, int sign, char digit)
+static int	check_overflow(int nb, char digit)
 {
-	if (sign == 1)
-		if ((long)nb * 10 + (digit - '0') > 2147483647)
-			return (1);
-	if (sign == -1)
-		if ((long)nb * 10 + (digit - '0') > (long)2147483648)
-			return (-1);
+	if ((long)nb * 10 + (digit - '0') > 2147483647)
+		return (1);
 	return (0);
 }
 
-static int	atoi_loop(char *str, int sign)
+static int	atoi_loop(char *str)
 {
 	int	i;
 	int	nb;
-	int	check;
 
 	i = 0;
 	nb = 0;
 	while (str[i] >= 48 && str[i] <= 57)
 	{
-		check = check_overflow(nb, sign, str[i]);
-		if (check == 1)
+		if (check_overflow(nb, str[i]))
 			return (2147483647);
-		else if (check == -1)
-			return (-2147483648);
-		else
-			nb = nb * 10 + (str[i] - '0');
+		nb = nb * 10 + (str[i] - '0');
 		i++;
 	}
-	return (nb * sign);
+	if (!(str[i] >= 48 && str[i] <= 57) && str[i] != 0)
+		return (-1);
+	return (nb);
 }
 
 int	ft_atoi(char *str)
 {
 	int	i;
-	int	sign;
+	int	nb;
 
 	i = 0;
-	sign = 1;
+	nb = 0;
 	if (!str)
 		return (0);
 	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
@@ -60,10 +53,13 @@ int	ft_atoi(char *str)
 	while (str[i] == '+' || str[i] == '-')
 	{
 		if (str[i] == '-')
-			sign = -sign;
+			return (-1);
 		i++;
 	}
-	return (atoi_loop(&str[i], sign));
+	nb = atoi_loop(&str[i]);
+	if (nb < 0)
+		return (-1);
+	return (nb);
 }
 
 void	ft_bzero(void *s, size_t n)

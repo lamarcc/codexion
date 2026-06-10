@@ -6,13 +6,13 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 03:42:28 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 22:23:40 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 00:06:24 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/codexion.h"
 
-int	init_dongles(t_simulation *sim)
+static int	init_dongles(t_simulation *sim)
 {
 	int	i;
 
@@ -33,7 +33,7 @@ int	init_dongles(t_simulation *sim)
 	return (0);
 }
 
-int	init_coders(t_simulation *sim)
+static int	init_coders(t_simulation *sim)
 {
 	int	i;
 
@@ -68,7 +68,7 @@ int	initialize(t_simulation *sim, char **args)
 	sim->dongle_cooldown = ft_atoi(args[7]);
 	sim->start_time = 0;
 	sim->monitor = 0;
-	if (strcmp("fifo", args[8]) == 0)
+	if ((strcmp("fifo", args[8]) == 0))
 		sim->scheduler = TRUE;
 	else
 		sim->scheduler = FALSE;
