@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 00:00:19 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 00:56:08 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 01:11:04 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ int	take_dongle(t_coder *coder)
 	if (find_first_dongle(coder))
 		return (1);
 	pthread_mutex_lock(&coder->first->mutex);
-	enter_queue(coder, coder->first);
+	if (!coder->sim->end_simulation)
+		enter_queue(coder, coder->first);
 	if (!scheduler(coder, coder->first))
 	{
 		pthread_mutex_unlock(&coder->first->mutex);
@@ -43,7 +44,8 @@ int	take_dongle(t_coder *coder)
 	coder->first->taken = TRUE;
 	pthread_mutex_unlock(&coder->first->mutex);
 	pthread_mutex_lock(&coder->second->mutex);
-	enter_queue(coder, coder->second);
+	if (!coder->sim->end_simulation)
+		enter_queue(coder, coder->second);
 	if (coder->sim->end_simulation || is_simulation_over(coder->sim))
 	{
 		pthread_mutex_unlock(&coder->second->mutex);

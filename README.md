@@ -74,7 +74,7 @@ Each coder must hold two dongles to compile. A naive implementation where each c
 With FIFO scheduling, each dongle request is served in arrival order, guaranteeing that no coder waits indefinitely. With EDF, the coder closest to burning out is prioritized, which also prevents starvation as long as the simulation parameters are feasible.
 
 **Dongle cooldown**
-After a coder releases a dongle, it enters a cooldown period (`dongle_cooldown` ms) during which it cannot be taken. This is tracked per dongle with a timestamp and enforced before any grant.
+After a coder releases a dongle, it enters a cooldown period (`dongle_cooldown` ms) during which it cannot be taken. This is tracked per dongle with a timestamp verification and enforced before any grant.
 
 **Precise burnout detection**
 A dedicated monitor thread continuously checks each coder's last compile timestamp against `time_to_burnout`. When a burnout is detected, the monitor logs it and sets the `end_simulation` flag. The burnout message is guaranteed to appear within 10 ms of the actual event.
@@ -87,8 +87,8 @@ All log output is protected by a dedicated mutex. This ensures that no two state
 **`pthread_mutex_t`**
 Used in multiple places:
 - One mutex per dongle to protect its state (available, owner, cooldown timestamp, waiting queue).
+- One mutex per coder to protect its information (previous_compile, nearest dongle address).
 - One global mutex to protect the `end_simulation` flag read/written by both the monitor and coder threads.
-- One mutex dedicated to serializing all log output.
 
 **`pthread_cond_t`**
 Each dongle has an associated condition variable. When a coder cannot acquire a dongle (it's in use or in cooldown), it registers its request in the dongle's priority queue and calls `pthread_cond_wait`. When a dongle becomes available, the owning thread calls `pthread_cond_broadcast` to wake up all waiting coders; each one then re-checks whether it's the next in line according to the scheduler.
@@ -105,18 +105,14 @@ Reading `end_simulation` is always done under its mutex lock, even in the hot lo
 ## Resources
 
 - [POSIX Threads Programming — Lawrence Livermore National Laboratory](https://hpc-tutorials.llnl.gov/posix/)
-- [The Little Book of Semaphores — Allen B. Downey](https://greenteapress.com/wp/semaphores/)
-- [Dining Philosophers Problem — Wikipedia](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
 - [Coffman conditions — Wikipedia](https://en.wikipedia.org/wiki/Deadlock#Necessary_conditions)
-- [Earliest Deadline First scheduling — Wikipedia](https://en.wikipedia.org/wiki/Earliest_deadline_first_scheduling)
 - [`pthread_cond_wait` man page](https://man7.org/linux/man-pages/man3/pthread_cond_wait.3p.html)
 - [`gettimeofday` man page](https://man7.org/linux/man-pages/man2/gettimeofday.2.html)
 
 **AI usage**
 Claude (claude.ai) was used during this project for the following tasks:
 - Clarifying concepts around `pthread_cond_wait`, `pthread_cond_broadcast`, and condition variable spurious wakeups.
-- Reviewing and correcting the Makefile (dependency tracking setup with `-MMD -MP -MF`).
-- Explaining the difference between FIFO and EDF scheduling in the context of this simulation.
 - Helping understand how ThreadSanitizer and Helgrind report data races and lock-order violations.
+- README
 
-All AI-generated explanations were reviewed, tested, and understood before being applied to the project. No code was copied directly from AI output.
+No code was copied directly from AI output.
