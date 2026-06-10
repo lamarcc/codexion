@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 00:00:19 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/10 05:36:47 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 00:56:08 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,15 @@ void	leave_dongle(t_coder *coder)
 {
 	pthread_mutex_lock(&coder->first->mutex);
 	coder->first->taken = FALSE;
-	leave_queue(coder->first);
+	if (!coder->sim->scheduler)
+		leave_queue(coder->first);
 	coder->first->last_released = get_time(coder->sim);
 	pthread_cond_broadcast(&coder->first->cond);
 	pthread_mutex_unlock(&coder->first->mutex);
 	pthread_mutex_lock(&coder->second->mutex);
 	coder->second->taken = FALSE;
-	leave_queue(coder->second);
+	if (!coder->sim->scheduler)
+		leave_queue(coder->second);
 	coder->second->last_released = get_time(coder->sim);
 	pthread_cond_broadcast(&coder->second->cond);
 	pthread_mutex_unlock(&coder->second->mutex);
