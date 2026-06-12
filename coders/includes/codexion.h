@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 00:44:45 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 05:17:42 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 
 typedef struct s_simulation
 {
+	int					error_check;
 	int					nb_coders;
 	int					nb_compile;
 	int					end_simulation;

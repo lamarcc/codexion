@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 00:00:19 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 01:40:21 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 22:06:35 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ static int	find_first_dongle(t_coder *coder)
 	{
 		coder->first = coder->left_d;
 		coder->second = coder->right_d;
+	}
+	if (!coder->sim->scheduler)
+	{
+		enter_queue(coder, coder->first);
+		enter_queue(coder, coder->second);
 	}
 	return (0);
 }
@@ -58,16 +63,16 @@ void	leave_dongle(t_coder *coder)
 {
 	pthread_mutex_lock(&coder->first->mutex);
 	coder->first->taken = FALSE;
-	if (!coder->sim->end_simulation)
-		leave_queue(coder->first);
 	coder->first->last_released = get_time(coder->sim);
+	if (!coder->sim->scheduler)
+		leave_queue(coder->first);
 	pthread_cond_broadcast(&coder->first->cond);
 	pthread_mutex_unlock(&coder->first->mutex);
 	pthread_mutex_lock(&coder->second->mutex);
 	coder->second->taken = FALSE;
-	if (!coder->sim->end_simulation)
-		leave_queue(coder->second);
 	coder->second->last_released = get_time(coder->sim);
+	if (!coder->sim->scheduler)
+		leave_queue(coder->second);
 	pthread_cond_broadcast(&coder->second->cond);
 	pthread_mutex_unlock(&coder->second->mutex);
 }

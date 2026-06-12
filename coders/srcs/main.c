@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 00:36:36 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 05:23:50 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 
 static int	error(t_simulation *sim)
 {
+	if (!sim)
+	{
+		printf("Error on initialization\n");
+		return (1);
+	}
 	if (sim->errors)
 		printf("\n%s\n", sim->errors);
 	printf("Follow this exemple: %s\n", ARG_EXEMPLE);

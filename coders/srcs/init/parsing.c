@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 01:19:57 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 00:34:01 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/12 02:07:15 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,17 +51,21 @@ static char	*append(char *s1, char *s2)
 	size_t	s2_len;
 	char	*dest;
 
-	if (!s1 && !s2)
-		return (NULL);
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
 	len = s1_len + s2_len;
 	dest = malloc(len + 1);
 	if (!dest)
+	{
+		if (s1)
+			free(s1);
+		fprintf(stderr, "malloc fail\n");
 		return (NULL);
+	}
 	ft_memcpy(dest, s1, s1_len);
 	ft_memcpy(dest + s1_len, s2, s2_len);
-	free(s1);
+	if (s1)
+		free(s1);
 	dest[len] = 0;
 	return (dest);
 }

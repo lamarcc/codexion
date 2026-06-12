@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 01:20:02 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/11 04:47:12 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	*coder_routine(void *arg)
 
 	coder = (t_coder *)arg;
 	if (coder->id % 2 == 0)
-		usleep(coder->sim->dongle_cooldown * 1000);
+		usleep(1000);
 	while (TRUE)
 	{
 		if (is_simulation_over(coder->sim))
