@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 03:42:28 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 05:24:37 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/12 02:34:32 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ static int	init_coders(t_simulation *sim)
 		sim->coders[i].sim = sim;
 		if (pthread_mutex_init(&sim->coders[i].mutex, NULL) != 0)
 			return (1);
+		sim->coders_mutex_init++;
 		i++;
 	}
 	return (0);
@@ -50,8 +51,10 @@ static int	init_dongles(t_simulation *sim)
 		sim->dongles[i].queue[1] = NULL;
 		if (pthread_mutex_init(&sim->dongles[i].mutex, NULL) != 0)
 			return (1);
+		sim->dongles_mutex_init += 1;
 		if (pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
 			return (1);
+		sim->dongles_cond_init += 1;
 		i++;
 	}
 	if (init_coders(sim))
@@ -69,18 +72,17 @@ int	initialize(t_simulation *sim, char **args)
 	sim->nb_compile = ft_atoi(args[6]);
 	sim->dongle_cooldown = ft_atoi(args[7]);
 	sim->end_simulation = FALSE;
-	sim->start_time = 0;
-	sim->monitor = 0;
 	if ((strcmp("fifo", args[8]) == 0))
 		sim->scheduler = TRUE;
 	else
 		sim->scheduler = FALSE;
 	if (pthread_mutex_init(&sim->mutex, NULL) != 0)
 		return (1);
-	sim->coders = calloc(sim->nb_coders, sizeof(t_coder));
+	sim->sim_mutex_init = TRUE;
+	sim->coders = ft_calloc(sim->nb_coders, sizeof(t_coder));
 	if (!sim->coders)
 		return (1);
-	sim->dongles = calloc(sim->nb_coders, sizeof(t_dongle));
+	sim->dongles = ft_calloc(sim->nb_coders, sizeof(t_dongle));
 	if (!sim->dongles)
 		return (1);
 	if (init_dongles(sim))

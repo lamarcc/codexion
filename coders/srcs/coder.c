@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 04:47:12 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/12 02:42:54 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,18 @@ static int	make_refactor(t_coder *coder)
 void	*coder_routine(void *arg)
 {
 	t_coder			*coder;
+	int				check;
 
 	coder = (t_coder *)arg;
+	while (1)
+	{
+		pthread_mutex_lock(&coder->sim->mutex);
+		check = coder->sim->coders_can_start;
+		pthread_mutex_unlock(&coder->sim->mutex);
+		if (check)
+			break ;
+		usleep(1000);
+	}
 	if (coder->id % 2 == 0)
 		usleep(1000);
 	while (TRUE)

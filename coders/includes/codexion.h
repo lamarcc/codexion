@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 05:17:42 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/12 02:39:41 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,13 @@ typedef struct s_simulation
 	int					nb_compile;
 	int					end_simulation;
 	int					scheduler;
+	int					coders_can_start;
+	int					coder_thread_success;
+	int					monitor_thread_success;
+	int					sim_mutex_init;
+	int					coders_mutex_init;
+	int					dongles_mutex_init;
+	int					dongles_cond_init;
 	long				burnout_time;
 	long				compile_time;
 	long				debug_time;
