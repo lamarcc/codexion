@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 02:43:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 00:35:57 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/12 04:09:36 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,10 @@ static int	atoi_loop(char *str)
 	while (str[i] >= 48 && str[i] <= 57)
 	{
 		if (check_overflow(nb, str[i]))
+		{
+			printf("value over INT_MAX, used INT_MAX by default\n\n");
 			return (2147483647);
+		}
 		nb = nb * 10 + (str[i] - '0');
 		i++;
 	}

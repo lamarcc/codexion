@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 03:38:31 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/11 22:20:13 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/12 05:43:11 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,3 @@ int	scheduler(t_coder *coder, t_dongle *dongle)
 			return (1);
 	return (0);
 }
-
