@@ -6,13 +6,13 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/12 05:42:31 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/17 22:26:13 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/codexion.h"
 
-void	waiting_start(t_coder *coder)
+int	waiting_start(t_coder *coder)
 {
 	int	check;
 
@@ -22,11 +22,11 @@ void	waiting_start(t_coder *coder)
 		pthread_mutex_lock(&coder->sim->mutex);
 		check = coder->sim->coders_can_start;
 		pthread_mutex_unlock(&coder->sim->mutex);
-		if (check)
-			break ;
+		if (check != 0)
+			return (check);
 		usleep(1000);
 	}
-	return ;
+	return (0);
 }
 
 static int	start_simulation(t_simulation *sim)
@@ -39,15 +39,13 @@ static int	start_simulation(t_simulation *sim)
 	{
 		if (pthread_create(&sim->coders[i].thread, NULL,
 				&coder_routine, &sim->coders[i]) != 0)
-			return (1);
+			return (set_start(sim, -1));
 		sim->coder_thread_success += 1;
 		i++;
 	}
-	pthread_mutex_lock(&sim->mutex);
-	sim->coders_can_start = TRUE;
-	pthread_mutex_unlock(&sim->mutex);
 	if (pthread_create(&sim->monitor, NULL, &monitor_routine, sim) != 0)
-		return (1);
+		return (set_start(sim, -1));
+	set_start(sim, TRUE);
 	sim->monitor_thread_success += 1;
 	return (0);
 }

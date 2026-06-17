@@ -6,11 +6,43 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/12 05:42:32 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/16 23:26:34 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/17 22:26:17 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/codexion.h"
+
+static void	cleanup_coders_and_dongles(t_simulation *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->dongles_mutex_init)
+	{
+		pthread_mutex_destroy(&sim->dongles[i].mutex);
+		i++;
+	}
+	i = 0;
+	while (i < sim->dongles_cond_init)
+	{
+		pthread_cond_destroy(&sim->dongles[i].cond);
+		i++;
+	}
+	i = 0;
+	while (i < sim->coders_mutex_init)
+	{
+		pthread_mutex_destroy(&sim->coders[i].mutex);
+		i++;
+	}
+}
+
+int	set_start(t_simulation *sim, int state)
+{
+	pthread_mutex_lock(&sim->mutex);
+	sim->coders_can_start = state;
+	pthread_mutex_unlock(&sim->mutex);
+	return (1);
+}
 
 int	error(t_simulation *sim)
 {
@@ -40,30 +72,6 @@ void	join_thread(t_simulation *sim)
 	}
 	if (sim->monitor_thread_success)
 		pthread_join(sim->monitor, NULL);
-}
-
-static void	cleanup_coders_and_dongles(t_simulation *sim)
-{
-	int	i;
-
-	i = 0;
-	while (i < sim->dongles_mutex_init)
-	{
-		pthread_mutex_destroy(&sim->dongles[i].mutex);
-		i++;
-	}
-	i = 0;
-	while (i < sim->dongles_cond_init)
-	{
-		pthread_cond_destroy(&sim->dongles[i].cond);
-		i++;
-	}
-	i = 0;
-	while (i < sim->coders_mutex_init)
-	{
-		pthread_mutex_destroy(&sim->coders[i].mutex);
-		i++;
-	}
 }
 
 void	cleanup(t_simulation *sim)
