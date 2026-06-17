@@ -29,7 +29,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADERS)
+$(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADERS) Makefile
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -I$(INCDIR) -MMD -MP -c $< -o $@
 
