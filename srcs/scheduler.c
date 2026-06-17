@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 03:38:31 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/12 05:43:11 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/18 00:02:23 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ static int	fifo_loop(t_coder *coder, t_dongle *dongle)
 		{
 			if (d_cooldown(coder->sim, dongle))
 				return (1);
-			usleep(1000);
+			if (smart_sleep(1, coder->sim))
+				return (0);
 		}
 	}
 	if (is_simulation_over(coder->sim))
@@ -41,7 +42,8 @@ static int	edf_loop(t_coder *coder, t_dongle *dongle)
 		{
 			if (d_cooldown(coder->sim, dongle))
 				return (1);
-			usleep(1000);
+			if (smart_sleep(1, coder->sim))
+				return (0);
 		}
 	}
 	if (is_simulation_over(coder->sim))

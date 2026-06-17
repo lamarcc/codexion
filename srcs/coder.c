@@ -6,29 +6,11 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/17 22:06:56 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/18 00:52:09 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/codexion.h"
-
-static int	smart_sleep(int ms, t_simulation *sim)
-{
-	long	time;
-	int		sim_ready;
-
-	time = get_time(sim);
-	while (time + ms > get_time(sim))
-	{
-		pthread_mutex_lock(&sim->mutex);
-		sim_ready = sim->end_simulation;
-		pthread_mutex_unlock(&sim->mutex);
-		if (sim_ready)
-			return (1);
-		usleep(1000);
-	}
-	return (0);
-}
 
 static int	make_compile(t_coder *coder)
 {
@@ -41,7 +23,10 @@ static int	make_compile(t_coder *coder)
 	print_log(coder, "has taken a dongle");
 	print_log(coder, "is compiling");
 	if (smart_sleep(coder->sim->compile_time, coder->sim))
+	{
+		leave_dongle(coder);
 		return (1);
+	}
 	leave_dongle(coder);
 	return (0);
 }
@@ -66,6 +51,24 @@ static int	make_refactor(t_coder *coder)
 	return (0);
 }
 
+int	smart_sleep(int ms, t_simulation *sim)
+{
+	long	time;
+	int		sim_ready;
+
+	time = get_time(sim);
+	while (time + ms > get_time(sim))
+	{
+		pthread_mutex_lock(&sim->mutex);
+		sim_ready = sim->end_simulation;
+		pthread_mutex_unlock(&sim->mutex);
+		if (sim_ready)
+			return (1);
+		usleep(1000);
+	}
+	return (0);
+}
+
 void	*coder_routine(void *arg)
 {
 	t_coder			*coder;
@@ -74,7 +77,7 @@ void	*coder_routine(void *arg)
 	if (waiting_start(coder) == -1)
 		return (NULL);
 	if (coder->id % 2 == 0)
-		usleep(coder->sim->compile_time * 1000);
+		smart_sleep(coder->sim->compile_time, coder->sim);
 	while (TRUE)
 	{
 		if (is_simulation_over(coder->sim))

@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/17 22:26:23 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/17 22:51:36 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ void	*monitor_routine(void *arg);
 void	*ft_calloc(size_t len, size_t size);
 long	time_since(t_simulation *sim, long time);
 long	get_time(t_simulation *sim);
+int		smart_sleep(int ms, t_simulation *sim);
 int		set_start(t_simulation *sim, int state);
 int		d_cooldown(t_simulation *sim, t_dongle *dongle);
 int		initialize(t_simulation *sim, char **args);
