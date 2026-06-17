@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/12 05:40:39 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/17 00:16:07 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	*coder_routine(void *arg)
 	coder = (t_coder *)arg;
 	waiting_start(coder);
 	if (coder->id % 2 == 0)
-		usleep(1000);
+		usleep(coder->sim->compile_time * 1000);
 	while (TRUE)
 	{
 		if (is_simulation_over(coder->sim))

@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 01:19:57 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/12 02:07:15 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/17 00:27:03 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ static char	*append(char *s1, char *s2)
 	{
 		if (s1)
 			free(s1);
-		fprintf(stderr, "malloc fail\n");
+		fprintf(stderr, "Error on malloc\n");
+		fprintf(stdout, "%s", s2);
 		return (NULL);
 	}
 	ft_memcpy(dest, s1, s1_len);
@@ -72,7 +73,7 @@ static char	*append(char *s1, char *s2)
 
 static int	check_scheduler(char *str)
 {
-	int	i;
+	int		i;
 
 	i = 0;
 	while (str[i])

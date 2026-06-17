@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 03:42:28 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/12 02:34:32 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/17 02:50:05 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	initialize(t_simulation *sim, char **args)
 	sim->nb_compile = ft_atoi(args[6]);
 	sim->dongle_cooldown = ft_atoi(args[7]);
 	sim->end_simulation = FALSE;
-	if ((strcmp("fifo", args[8]) == 0))
+	if ((strcmp("FIFO", args[8]) == 0))
 		sim->scheduler = TRUE;
 	else
 		sim->scheduler = FALSE;

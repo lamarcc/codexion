@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/12 05:41:38 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/16 23:27:10 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void	update_compile_time(t_coder *coder);
 void	waiting_start(t_coder *coder);
 void	start_time(t_simulation *sim);
 void	cleanup(t_simulation *sim);
+void	join_thread(t_simulation *sim);
 void	*coder_routine(void *arg);
 void	*monitor_routine(void *arg);
 void	*ft_calloc(size_t len, size_t size);
@@ -93,6 +94,7 @@ long	get_time(t_simulation *sim);
 int		d_cooldown(t_simulation *sim, t_dongle *dongle);
 int		initialize(t_simulation *sim, char **args);
 int		check_args(t_simulation	*sim, char **args);
+int		error(t_simulation *sim);
 int		is_simulation_over(t_simulation *sim);
 int		take_dongle(t_coder *coder);
 int		scheduler(t_coder *coder, t_dongle *dongle);

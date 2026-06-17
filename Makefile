@@ -12,6 +12,7 @@ SRCS        = $(SRCDIR)/main.c \
               $(SRCDIR)/monitor.c \
               $(SRCDIR)/dongle.c \
               $(SRCDIR)/scheduler.c \
+              $(SRCDIR)/clear.c \
               $(SRCDIR)/init/parsing.c \
               $(SRCDIR)/init/init.c \
               $(SRCDIR)/init/utils.c \

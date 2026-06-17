@@ -6,13 +6,13 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/12 05:42:32 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/12 05:43:04 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/16 23:26:34 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/codexion.h"
 
-static int	error(t_simulation *sim)
+int	error(t_simulation *sim)
 {
 	if (!sim)
 	{
@@ -28,7 +28,7 @@ static int	error(t_simulation *sim)
 	return (1);
 }
 
-static void	join_thread(t_simulation *sim)
+void	join_thread(t_simulation *sim)
 {
 	int	i;
 
