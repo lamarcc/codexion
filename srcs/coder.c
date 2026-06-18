@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 21:47:29 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/18 00:52:09 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/18 05:06:19 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,7 @@ static int	make_compile(t_coder *coder)
 	if (take_dongle(coder))
 		return (1);
 	update_compile_time(coder);
-	print_log(coder, "has taken a dongle");
-	print_log(coder, "has taken a dongle");
-	print_log(coder, "is compiling");
+	compile_log(coder);
 	if (smart_sleep(coder->sim->compile_time, coder->sim))
 	{
 		leave_dongle(coder);
@@ -35,7 +33,7 @@ static int	make_debug(t_coder *coder)
 {
 	if (is_simulation_over(coder->sim))
 		return (1);
-	print_log(coder, "is debugging");
+	debug_log(coder);
 	if (smart_sleep(coder->sim->debug_time, coder->sim))
 		return (1);
 	return (0);
@@ -45,7 +43,7 @@ static int	make_refactor(t_coder *coder)
 {
 	if (is_simulation_over(coder->sim))
 		return (1);
-	print_log(coder, "is refactoring");
+	refactor_log(coder);
 	if (smart_sleep(coder->sim->refactor_time, coder->sim))
 		return (1);
 	return (0);

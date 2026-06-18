@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 00:45:55 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/17 22:51:36 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/18 05:06:40 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,9 @@ typedef struct s_dongle
 	struct s_coder	*queue[2];
 }		t_dongle;
 
-void	print_log(t_coder *coder, char *str);
+void	compile_log(t_coder *coder);
+void	debug_log(t_coder *coder);
+void	refactor_log(t_coder *coder);
 void	enter_queue(t_coder *coder, t_dongle *dongle);
 void	leave_queue(t_dongle *dongle);
 void	leave_dongle(t_coder *coder);

@@ -6,7 +6,7 @@
 /*   By: celamarc <celamarc@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/16 20:05:50 by celamarc          #+#    #+#             */
-/*   Updated: 2026/06/18 00:41:22 by celamarc         ###   ########lyon.fr   */
+/*   Updated: 2026/06/18 05:02:16 by celamarc         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ static int	start_simulation(t_simulation *sim)
 {
 	int	i;
 
-	start_time(sim);
 	i = 0;
 	while (i < sim->nb_coders)
 	{
@@ -45,6 +44,7 @@ static int	start_simulation(t_simulation *sim)
 	}
 	if (pthread_create(&sim->monitor, NULL, &monitor_routine, sim) != 0)
 		return (set_start(sim, -1));
+	start_time(sim);
 	set_start(sim, TRUE);
 	sim->monitor_thread_success += 1;
 	return (0);
